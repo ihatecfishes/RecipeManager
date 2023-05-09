@@ -28,6 +28,7 @@ public class MainForm {
     private JButton buttonUpdate;
 
     public MainForm() {
+<<<<<<< HEAD
         
         
 
@@ -46,6 +47,8 @@ public class MainForm {
                 }
             }
         });
+=======
+>>>>>>> 403eced (Initial Commit)
 
         buttonAdd.addActionListener(new ActionListener() {
             @Override
