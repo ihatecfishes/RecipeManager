@@ -19,7 +19,7 @@ public class FileEditor {
 
         scanner.close();
         fileContent = contentBuilder.toString();
-        System.out.println("File opened successfully.");
+        System.out.println("File opened.");
     }
 
     public void saveFile() {
@@ -32,9 +32,9 @@ public class FileEditor {
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
             writer.write(fileContent);
             writer.close();
-            System.out.println("File saved successfully.");
+            System.out.println("File saved.");
         } catch (IOException e) {
-            System.out.println("Error saving the file: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -44,9 +44,9 @@ public class FileEditor {
             writer.write(fileContent);
             writer.close();
             fileName = newFileName;
-            System.out.println("File saved as " + newFileName + " successfully.");
+            System.out.println("File saved as " + newFileName);
         } catch (IOException e) {
-            System.out.println("Error saving the file: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
