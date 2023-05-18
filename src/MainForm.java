@@ -28,13 +28,9 @@ public class MainForm {
     private JButton buttonUpdate;
 
     public MainForm() {
-<<<<<<< HEAD
-        
-        
 
 
-
- removeButton.addActionListener(new ActionListener() {
+        removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selection = listRecipes.getSelectedIndex();
@@ -47,8 +43,6 @@ public class MainForm {
                 }
             }
         });
-=======
->>>>>>> 403eced (Initial Commit)
 
         buttonAdd.addActionListener(new ActionListener() {
             @Override
@@ -61,8 +55,7 @@ public class MainForm {
                             int smallest = Integer.parseInt(recipe.getName().split(" ")[2]);
                             if (number == smallest) {
                                 number++;
-                            }
-                            else {
+                            } else {
                                 break;
                             }
                         } catch (NumberFormatException ex) {
@@ -134,7 +127,7 @@ public class MainForm {
         int recipesLength = recipes.size();
 
         for (int i = 0; i < recipesLength; i++) {
-           listModel.addElement(recipes.get(i));
+            listModel.addElement(recipes.get(i));
         }
 
         int previousSelection = listRecipes.getSelectedIndex();
@@ -151,8 +144,7 @@ public class MainForm {
             textTitle.setEnabled(false);
             textBody.setEnabled(false);
             textNotes.setEnabled(false);
-        }
-        else {
+        } else {
             textTitle.setText(recipes.get(selection).getName());
             textBody.setText(recipes.get(selection).getContent());
             textNotes.setText(recipes.get(selection).getNotes());
@@ -166,8 +158,7 @@ public class MainForm {
     public void updateChanges() {
         if (change) {
             buttonUpdate.setEnabled(true);
-        }
-        else {
+        } else {
             buttonUpdate.setEnabled(false);
         }
     }
@@ -175,11 +166,11 @@ public class MainForm {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException e) {
+        } catch (IllegalAccessException e) {
         }
-        catch (UnsupportedLookAndFeelException e) { }
-        catch (ClassNotFoundException e) { }
-        catch (InstantiationException e) { }
-        catch (IllegalAccessException e) { }
 
         JFrame frame = new JFrame("MainForm");
         frame.setContentPane(new MainForm().panelMain);
