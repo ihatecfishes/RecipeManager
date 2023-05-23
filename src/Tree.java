@@ -98,19 +98,3 @@ class Tree<T> {
         }
     }
 }
-
-public class Main {
-    public static void main(String[] args) {
-        Tree<Integer> tree = new Tree<>();
-        tree.addNode("A", 1, "/");
-        tree.addNode("B", 2, "/");
-        tree.addNode("C", 3, "/");
-        tree.addNode("D", 4, "B/");
-        tree.addNode("E", 5, "B/");
-        tree.addNode("F", 6, "C/");
-        tree.removeNode("C", "/");
-
-
-        tree.display();
-    }
-}

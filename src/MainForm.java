@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MainForm {
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private ArrayList<Ingredient> ingredients = new ArrayList<>();
-    private Boolean change = false;
+    private boolean change = false;
     private JPanel panelMain;
     private JList listRecipes;
     private JTabbedPane tabbedPane1;
@@ -26,6 +26,12 @@ public class MainForm {
     private JTextField textField2;
     private JButton button1;
     private JButton buttonUpdate;
+    private JSpinner spinner1;
+    private JTabbedPane tabbedPane2;
+    private JTabbedPane tabbedPane3;
+    private JTable table1;
+    private JTable table2;
+    private JTextPane textPane1;
 
     public MainForm() {
 
