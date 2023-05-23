@@ -14,7 +14,7 @@ public class MainForm {
     private JPanel panelMain;
     private JList listRecipes;
     private JTabbedPane tabbedPane1;
-    private JTextPane textBody;
+    private JTextArea textBody;
     private JButton newButton;
     private JButton openButton;
     private JButton saveButton;
@@ -27,11 +27,11 @@ public class MainForm {
     private JButton button1;
     private JButton buttonUpdate;
     private JSpinner spinner1;
-    private JTabbedPane tabbedPane2;
     private JTabbedPane tabbedPane3;
     private JTable table1;
     private JTable table2;
-    private JTextPane textPane1;
+    private JEditorPane editorPane2;
+    private JTextArea textArea1;
 
     public MainForm() {
 
