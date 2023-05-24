@@ -6,6 +6,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainForm {
     private ArrayList<Recipe> recipes = new ArrayList<>();
@@ -77,6 +78,21 @@ public class MainForm {
                 updateList();
             }
         });
+
+        /*
+        saveAsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                //int result = fileChooser.showSaveDialog(frame);
+                //if (result == JFileChooser.APPROVE_OPTION) {
+                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    RecipeSaver.saveRecipe(filePath, ingredients);
+                    JOptionPane.showMessageDialog(null, "Recipe saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                //}
+            }
+        });
+        */
 
         listRecipes.addListSelectionListener(new ListSelectionListener() {
             @Override
