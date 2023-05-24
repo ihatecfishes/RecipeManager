@@ -32,6 +32,7 @@ public class MainForm {
     private JTable table2;
     private JEditorPane editorPane2;
     private JTextArea textArea1;
+    private JTree recipeTree;
 
     public MainForm() {
 
