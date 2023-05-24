@@ -1,0 +1,92 @@
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+class MainForm {
+    // Existing code
+
+    public MainForm() {
+       // Existing code
+
+        // Set the color theme
+        Color purpleColor = new Color(153, 51, 255);
+        Color blueColor = new Color(0, 102, 204);
+        panelMain.setBackground(purpleColor);
+        textTitle.setBackground(blueColor);
+        textBody.setBackground(blueColor);
+        textNotes.setBackground(blueColor);
+        listRecipes.setBackground(blueColor);
+        table1.setBackground(blueColor);
+        table2.setBackground(blueColor);
+        textArea1.setBackground(blueColor);
+
+        // Set the font and foreground color
+        Font font = new Font("Arial", Font.PLAIN, 12);
+        Color foregroundColor = Color.white;
+        textTitle.setFont(font);
+        textTitle.setForeground(foregroundColor);
+        textBody.setFont(font);
+        textBody.setForeground(foregroundColor);
+        textNotes.setFont(font);
+        textNotes.setForeground(foregroundColor);
+        listRecipes.setFont(font);
+        listRecipes.setForeground(foregroundColor);
+        table1.setFont(font);
+        table1.setForeground(foregroundColor);
+        table2.setFont(font);
+        table2.setForeground(foregroundColor);
+        textArea1.setFont(font);
+        textArea1.setForeground(foregroundColor);
+
+        // Modify the button appearance
+        Color buttonBackgroundColor = new Color(51, 122, 183);
+        Color buttonForegroundColor = Color.white;
+        newButton.setBackground(buttonBackgroundColor);
+        newButton.setForeground(buttonForegroundColor);
+        openButton.setBackground(buttonBackgroundColor);
+        openButton.setForeground(buttonForegroundColor);
+        saveButton.setBackground(buttonBackgroundColor);
+        saveButton.setForeground(buttonForegroundColor);
+        saveAsButton.setBackground(buttonBackgroundColor);
+        saveAsButton.setForeground(buttonForegroundColor);
+        buttonAdd.setBackground(buttonBackgroundColor);
+        buttonAdd.setForeground(buttonForegroundColor);
+        removeButton.setBackground(buttonBackgroundColor);
+        removeButton.setForeground(buttonForegroundColor);
+        button1.setBackground(buttonBackgroundColor);
+        button1.setForeground(buttonForegroundColor);
+        buttonUpdate.setBackground(buttonBackgroundColor);
+        buttonUpdate.setForeground(buttonForegroundColor);
+    }
+
+    public void updateList() {
+        // Existing code
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+
+    public static void createAndShowGUI() {
+        JFrame frame = new JFrame("MainForm");
+        frame.setContentPane(new Recipe().panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
