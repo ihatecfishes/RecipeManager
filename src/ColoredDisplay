@@ -47,22 +47,38 @@ class MainForm {
         // Modify the button appearance
         Color buttonBackgroundColor = new Color(51, 122, 183);
         Color buttonForegroundColor = Color.white;
+        int borderRadius = 15;
         newButton.setBackground(buttonBackgroundColor);
         newButton.setForeground(buttonForegroundColor);
+        newButton.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         openButton.setBackground(buttonBackgroundColor);
         openButton.setForeground(buttonForegroundColor);
+        openButton.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         saveButton.setBackground(buttonBackgroundColor);
         saveButton.setForeground(buttonForegroundColor);
+        saveButton.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         saveAsButton.setBackground(buttonBackgroundColor);
         saveAsButton.setForeground(buttonForegroundColor);
+        saveButton.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+       
         buttonAdd.setBackground(buttonBackgroundColor);
         buttonAdd.setForeground(buttonForegroundColor);
+        buttonAdd.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         removeButton.setBackground(buttonBackgroundColor);
         removeButton.setForeground(buttonForegroundColor);
+        removeButton.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         button1.setBackground(buttonBackgroundColor);
         button1.setForeground(buttonForegroundColor);
+        button1.setBorder(BorderFactory.createRoundedBorder(borderRadius));
+        
         buttonUpdate.setBackground(buttonBackgroundColor);
         buttonUpdate.setForeground(buttonForegroundColor);
+        buttonUpdate.setBorder(BorderFactory.createRoundedBorder(borderRadius));
     }
 
     public void updateList() {
