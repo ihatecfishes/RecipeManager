@@ -34,7 +34,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="ad652" class="javax.swing.JList" binding="listRecipes">
+                  <component id="5dce" class="javax.swing.JTree" binding="recipeTree">
                     <constraints/>
                     <properties/>
                   </component>
