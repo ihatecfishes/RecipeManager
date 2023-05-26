@@ -1,21 +1,15 @@
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Map;
+import javax.swing.event.*;
+import javax.swing.tree.*;
+import java.awt.event.*;
 
 public class MainForm {
-    private ArrayList<Recipe> recipes = new ArrayList<>();
-    private ArrayList<Ingredient> ingredients = new ArrayList<>();
-    private boolean change = false;
+    private Tree<Recipe> recipes = new Tree<>();
+    private Boolean change = false;
     private JPanel panelMain;
-    private JList listRecipes;
+    private JTree treeRecipes;
     private JTabbedPane tabbedPane1;
-    private JTextArea textBody;
+    private JTextPane textBody;
     private JButton newButton;
     private JButton openButton;
     private JButton saveButton;
@@ -27,28 +21,22 @@ public class MainForm {
     private JTextField textField2;
     private JButton button1;
     private JButton buttonUpdate;
-    private JSpinner spinner1;
-    private JTabbedPane tabbedPane3;
-    private JTable table1;
-    private JTable table2;
-    private JEditorPane editorPane2;
-    private JTextArea textArea1;
-    private JTree recipeTree;
+    private JList<Ingredient> listIngredients;
 
     public MainForm() {
-
-
+        updateTree();
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selection = listRecipes.getSelectedIndex();
-                if (selection >= 0) {
-                    recipes.remove(selection);
-                    updateList();
-                    textTitle.setText("");
-                    textBody.setText("");
-                    textNotes.setText("");
-                }
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
+                    return;
+
+                Recipe recipe = (Recipe) selectedNode.getUserObject();
+                recipes.removeNode(recipe.getName(), textField2.getText());
+
+                updateTree();
+                clearFields();
             }
         });
 
@@ -57,55 +45,60 @@ public class MainForm {
             public void actionPerformed(ActionEvent e) {
                 // Find unique name
                 int number = 1;
-                for (Recipe recipe : recipes) {
-                    if (recipe.getName().startsWith("Untitled Recipe ")) {
-                        try {
-                            int smallest = Integer.parseInt(recipe.getName().split(" ")[2]);
-                            if (number == smallest) {
-                                number++;
-                            } else {
-                                break;
-                            }
-                        } catch (NumberFormatException ex) {
-                            continue;
-                        }
-
-                    }
+                Tree.Node<Recipe> rootNode = recipes.getRoot();
+                if (rootNode != null) {
+                    int childCount = rootNode.getChildren().size();
+                    number = childCount + 1;
                 }
 
                 // Add recipe
                 Recipe newRecipe = new Recipe("Untitled Recipe " + number);
-                recipes.add(newRecipe);
-                updateList();
+                recipes.addNode(newRecipe.getName(), newRecipe, textField2.getText());
+
+                updateTree();
             }
         });
 
-        /*
-        saveAsButton.addActionListener(new ActionListener() {
+        treeRecipes.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                //int result = fileChooser.showSaveDialog(frame);
-                //if (result == JFileChooser.APPROVE_OPTION) {
-                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    RecipeSaver.saveRecipe(filePath, ingredients);
-                    JOptionPane.showMessageDialog(null, "Recipe saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                //}
-            }
-        });
-        */
+            public void valueChanged(TreeSelectionEvent e) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null)
+                    return;
 
-        listRecipes.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selection = listRecipes.getSelectedIndex();
+                Object userObject = selectedNode.getUserObject();
+                String path = getPathFromTree(selectedNode);
 
-                updateSelection(selection);
+                if (userObject instanceof Recipe) {
+                    Recipe recipe = (Recipe) userObject;
+                    updateSelection(recipe);
+                }
+
+                textField2.setText(path);
 
                 change = false;
                 updateChanges();
             }
+
+            // Helper method to get the path of the selected node
+            private String getPathFromTree(DefaultMutableTreeNode node) {
+                StringBuilder pathBuilder = new StringBuilder();
+                TreeNode[] nodes = node.getPath();
+                for (int i = 0; i < nodes.length; i++) {
+                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) nodes[i];
+                    Object userObject = currentNode.getUserObject();
+                    if (userObject instanceof String) {
+                        String nodeName = (String) userObject;
+                        pathBuilder.append(nodeName);
+                        if (i != nodes.length - 1) {
+                            pathBuilder.append("/");
+                        }
+                    }
+                }
+                return pathBuilder.toString();
+            }
         });
+
 
         DocumentListener contentChange = new DocumentListener() {
             @Override
@@ -130,59 +123,70 @@ public class MainForm {
         textTitle.getDocument().addDocumentListener(contentChange);
         textBody.getDocument().addDocumentListener(contentChange);
         textNotes.getDocument().addDocumentListener(contentChange);
+
         buttonUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selection = listRecipes.getSelectedIndex();
-                recipes.get(selection).setName(textTitle.getText());
-                recipes.get(selection).setContent(textBody.getText());
-                recipes.get(selection).setNotes(textNotes.getText());
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
+                    return;
 
-                updateList();
+                Recipe recipe = (Recipe) selectedNode.getUserObject();
+                recipe.setName(textTitle.getText());
+                recipe.setContent(textBody.getText());
+                recipe.setNotes(textNotes.getText());
+
+                // Update the node's key with the new recipe name
+                selectedNode.setUserObject(recipe.getName());
+
+                updateTree();
                 change = false;
                 updateChanges();
             }
         });
     }
 
-    public void updateList() {
-        DefaultListModel<Recipe> listModel = new DefaultListModel<>();
-        int recipesLength = recipes.size();
+    public void updateTree() {
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Recipes");
 
-        for (int i = 0; i < recipesLength; i++) {
-            listModel.addElement(recipes.get(i));
+        Tree.Node<Recipe> rootRecipeNode = recipes.getRoot();
+        if (rootRecipeNode != null) {
+            addNodeToTree(rootNode, rootRecipeNode);
         }
 
-        int previousSelection = listRecipes.getSelectedIndex();
-        listRecipes.setModel(listModel);
-        listRecipes.setSelectedIndex(previousSelection);
+        treeRecipes.setModel(new DefaultTreeModel(rootNode));
     }
 
-    public void updateSelection(int selection) {
-        if (selection == -1) {
-            // No selection
-            textTitle.setText("");
-            textBody.setText("");
-            textNotes.setText("");
-            textTitle.setEnabled(false);
-            textBody.setEnabled(false);
-            textNotes.setEnabled(false);
-        } else {
-            textTitle.setText(recipes.get(selection).getName());
-            textBody.setText(recipes.get(selection).getContent());
-            textNotes.setText(recipes.get(selection).getNotes());
+    private void addNodeToTree(DefaultMutableTreeNode parentNode, Tree.Node<Recipe> recipeNode) {
+        Recipe recipe = recipeNode.getData();
+        DefaultMutableTreeNode recipeTreeNode = new DefaultMutableTreeNode(recipe);
 
-            textTitle.setEnabled(true);
-            textBody.setEnabled(true);
-            textNotes.setEnabled(true);
+        for (Tree.Node<Recipe> childNode : recipeNode.getChildren()) {
+            addNodeToTree(recipeTreeNode, childNode);
         }
+
+        parentNode.add(recipeTreeNode);
+    }
+
+    public void updateSelection(Recipe recipe) {
+        textTitle.setText(recipe.getName());
+        textBody.setText(recipe.getContent());
+        textNotes.setText(recipe.getNotes());
+    }
+
+    public void clearFields() {
+        textTitle.setText("");
+        textBody.setText("");
+        textNotes.setText("");
     }
 
     public void updateChanges() {
         if (change) {
-            buttonUpdate.setEnabled(true);
+            saveButton.setEnabled(true);
+            saveAsButton.setEnabled(true);
         } else {
-            buttonUpdate.setEnabled(false);
+            saveButton.setEnabled(false);
+            saveAsButton.setEnabled(false);
         }
     }
 
@@ -194,11 +198,15 @@ public class MainForm {
         } catch (InstantiationException e) {
         } catch (IllegalAccessException e) {
         }
-
         JFrame frame = new JFrame("MainForm");
         frame.setContentPane(new MainForm().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

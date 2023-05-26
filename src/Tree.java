@@ -54,10 +54,13 @@ class Tree<T> {
         }
     }
 
+    public Node<T> findNode(String key) {
+        return findNode(root, key);
+    }
+
     private Node<T> findNode(Node<T> currentNode, String path) {
         String[] keys = path.split("/");
         for (String key : keys) {
-
             if (currentNode == null || currentNode.children == null) {
                 return null;
             }
@@ -66,7 +69,11 @@ class Tree<T> {
         return currentNode;
     }
 
-    private static class Node<T> {
+    public Node<T> getRoot() {
+        return root;
+    }
+
+    public static class Node<T> {
         private String key;
         private T data;
         private List<Node<T>> children;
@@ -95,6 +102,14 @@ class Tree<T> {
                 }
             }
             return null;
+        }
+
+        public List<Node<T>> getChildren() {
+            return children;
+        }
+
+        public T getData() {
+            return data;
         }
     }
 }
