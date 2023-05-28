@@ -150,7 +150,7 @@
           <component id="80dc6" class="javax.swing.JButton" binding="buttonUpdate">
             <constraints/>
             <properties>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <text value="Update"/>
             </properties>
           </component>

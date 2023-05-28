@@ -134,12 +134,16 @@ public class MainForm {
                 Recipe recipe = (Recipe) selectedNode.getUserObject();
                 String newTitle = textTitle.getText();
                 String newBody = textBody.getText();
+                String newNotes = textNotes.getText();
 
-                recipe.setName(newTitle); // Update the name field
+                recipe.setName(newTitle);
+                recipe.setContent(newBody);
+                recipe.setNotes(newNotes);
 
                 updateTree();
             }
         });
+
     }
 
     public static void main(String[] args) {
@@ -187,7 +191,8 @@ public class MainForm {
     // Helper method to update the selection fields
     private void updateSelection(Recipe recipe) {
         textTitle.setText(recipe.getName());
-        textBody.setText(recipe.getBody());
+        textBody.setText(recipe.getContent());
+        textNotes.setText(recipe.getNotes());
     }
 
     // Helper method to clear the selection fields
