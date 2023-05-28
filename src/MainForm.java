@@ -4,7 +4,6 @@ import javax.swing.tree.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-
 public class MainForm {
 
     private ArrayList<Ingredient> ingredients = new ArrayList<>();
@@ -24,6 +23,7 @@ public class MainForm {
     private JTextField textField2;
     private JButton button1;
     private JButton buttonUpdate;
+    private JButton addFolderButton; // New "Add Folder" button
     private JSpinner spinner1;
     private JTabbedPane tabbedPane3;
     private JTable table1;
@@ -32,38 +32,37 @@ public class MainForm {
     private JTextArea textArea1;
     private JTree recipeTree;
 
+    private Tree<Recipe> recipes = new Tree<>();
 
+    private JTree treeRecipes;
 
-        private Tree<Recipe> recipes = new Tree<>();
+    private JList<Ingredient> listIngredients;
 
+    public MainForm() {
+        updateTree();
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
+                    return;
 
-        private JTree treeRecipes;
+                Recipe recipe = (Recipe) selectedNode.getUserObject();
+                recipes.removeNode(recipe.getName(), textField2.getText());
 
-        private JList<Ingredient> listIngredients;
+                updateTree();
+                clearFields();
+            }
+        });
 
-        public MainForm() {
-            updateTree();
-            removeButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-                    if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
-                        return;
-
-                    Recipe recipe = (Recipe) selectedNode.getUserObject();
-                    recipes.removeNode(recipe.getName(), textField2.getText());
-
-                    updateTree();
-                    clearFields();
-                }
-            });
-
-            buttonAdd.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+        buttonAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (textField2.getText().isEmpty()) {
+                    // Adding a recipe
                     // Find unique name
                     int number = 1;
-                    Tree.Node<Recipe> rootNode = recipes.getRoot();
+                    Tree.Node<Recipe> rootNode = recipes.root;
                     if (rootNode != null) {
                         int childCount = rootNode.getChildren().size();
                         number = childCount + 1;
@@ -72,161 +71,152 @@ public class MainForm {
                     // Add recipe
                     Recipe newRecipe = new Recipe("Untitled Recipe " + number);
                     recipes.addNode(newRecipe.getName(), newRecipe, textField2.getText());
+                } else {
+                    // Adding a folder
+                    String folderName = textField2.getText();
+                    recipes.addNode(folderName, null, textField2.getText());
+                }
 
+                updateTree();
+            }
+        });
+
+        addFolderButton.addActionListener(new ActionListener() { // ActionListener for "Add Folder" button
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String folderName = JOptionPane.showInputDialog(panelMain, "Enter folder name:");
+                if (folderName != null && !folderName.isEmpty()) {
+                    recipes.addNode(folderName, null, textField2.getText());
                     updateTree();
                 }
-            });
-
-            treeRecipes.addTreeSelectionListener(new TreeSelectionListener() {
-                @Override
-                public void valueChanged(TreeSelectionEvent e) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-                    if (selectedNode == null)
-                        return;
-
-                    Object userObject = selectedNode.getUserObject();
-                    String path = getPathFromTree(selectedNode);
-
-                    if (userObject instanceof Recipe) {
-                        Recipe recipe = (Recipe) userObject;
-                        updateSelection(recipe);
-                    }
-
-                    textField2.setText(path);
-
-                    change = false;
-                    updateChanges();
-                }
-
-                // Helper method to get the path of the selected node
-                private String getPathFromTree(DefaultMutableTreeNode node) {
-                    StringBuilder pathBuilder = new StringBuilder();
-                    TreeNode[] nodes = node.getPath();
-                    for (int i = 0; i < nodes.length; i++) {
-                        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) nodes[i];
-                        Object userObject = currentNode.getUserObject();
-                        if (userObject instanceof String) {
-                            String nodeName = (String) userObject;
-                            pathBuilder.append(nodeName);
-                            if (i != nodes.length - 1) {
-                                pathBuilder.append("/");
-                            }
-                        }
-                    }
-                    return pathBuilder.toString();
-                }
-            });
-
-
-            DocumentListener contentChange = new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    change = true;
-                    updateChanges();
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    change = true;
-                    updateChanges();
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    change = true;
-                    updateChanges();
-                }
-            };
-
-            textTitle.getDocument().addDocumentListener(contentChange);
-            textBody.getDocument().addDocumentListener(contentChange);
-            textNotes.getDocument().addDocumentListener(contentChange);
-
-            buttonUpdate.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-                    if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
-                        return;
-
-                    Recipe recipe = (Recipe) selectedNode.getUserObject();
-                    recipe.setName(textTitle.getText());
-                    recipe.setContent(textBody.getText());
-                    recipe.setNotes(textNotes.getText());
-
-                    // Update the node's key with the new recipe name
-                    selectedNode.setUserObject(recipe.getName());
-
-                    updateTree();
-                    change = false;
-                    updateChanges();
-                }
-            });
-        }
-
-        public void updateTree() {
-            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Recipes");
-
-            Tree.Node<Recipe> rootRecipeNode = recipes.getRoot();
-            if (rootRecipeNode != null) {
-                addNodeToTree(rootNode, rootRecipeNode);
             }
+        });
 
-            treeRecipes.setModel(new DefaultTreeModel(rootNode));
-        }
+        treeRecipes.addTreeSelectionListener(new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null)
+                    return;
 
-        private void addNodeToTree(DefaultMutableTreeNode parentNode, Tree.Node<Recipe> recipeNode) {
-            Recipe recipe = recipeNode.getData();
-            DefaultMutableTreeNode recipeTreeNode = new DefaultMutableTreeNode(recipe);
+                Object userObject = selectedNode.getUserObject();
+                String path = getPathFromTree(selectedNode);
 
-            for (Tree.Node<Recipe> childNode : recipeNode.getChildren()) {
-                addNodeToTree(recipeTreeNode, childNode);
+                if (userObject instanceof Recipe) {
+                    Recipe recipe = (Recipe) userObject;
+                    updateSelection(recipe);
+                }
+
+                textField2.setText(path);
+
+                if (change) {
+                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        // Save changes
+                        // TODO: Implement save logic
+                    }
+                }
+
+                change = false;
+                buttonUpdate.setEnabled(false);
             }
+        });
 
-            parentNode.add(recipeTreeNode);
+
+
+        buttonUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
+                    return;
+
+                Recipe recipe = (Recipe) selectedNode.getUserObject();
+                String newTitle = textTitle.getText();
+                String newBody = textBody.getText();
+
+                recipe.setName(newTitle); // Update the name field
+
+                updateTree();
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException e) {
+        } catch (IllegalAccessException e) {
         }
+        JFrame frame = new JFrame("Recipe Manager");
+        frame.setContentPane(new MainForm().panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
 
-        public void updateSelection(Recipe recipe) {
-            textTitle.setText(recipe.getName());
-            textBody.setText(recipe.getContent());
-            textNotes.setText(recipe.getNotes());
-        }
+    // Helper method to update the tree view
+    private void updateTree() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Recipes");
+        addNodes(root, recipes.root);
+        DefaultTreeModel treeModel = new DefaultTreeModel(root);
+        treeRecipes.setModel(treeModel);
+    }
 
-        public void clearFields() {
-            textTitle.setText("");
-            textBody.setText("");
-            textNotes.setText("");
-        }
+    // Helper method to add nodes recursively to the tree view
+    private void addNodes(DefaultMutableTreeNode parent, Tree.Node<Recipe> node) {
+        if (node == null)
+            return;
 
-        public void updateChanges() {
-            if (change) {
-                saveButton.setEnabled(true);
-                saveAsButton.setEnabled(true);
+        for (Tree.Node<Recipe> child : node.getChildren()) {
+            if (child.getData() != null) {
+                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child.getKey()); // Updated line
+                parent.add(childNode);
             } else {
-                saveButton.setEnabled(false);
-                saveAsButton.setEnabled(false);
+                String folderName = child.getName();
+                DefaultMutableTreeNode folderNode = new DefaultMutableTreeNode(folderName);
+                parent.add(folderNode);
+                addNodes(folderNode, child);
             }
-        }
-
-        public static void main(String[] args) {
-            try {
-                UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            } catch (UnsupportedLookAndFeelException e) {
-            } catch (ClassNotFoundException e) {
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            }
-            JFrame frame = new JFrame("MainForm");
-            frame.setContentPane(new MainForm().panelMain);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setVisible(true);
-
-        }
-
-        private void createUIComponents() {
-            // TODO: place custom component creation code here
         }
     }
 
 
+    // Helper method to update the selection fields
+    private void updateSelection(Recipe recipe) {
+        textTitle.setText(recipe.getName());
+        textBody.setText(recipe.getBody());
+    }
+
+    // Helper method to clear the selection fields
+    private void clearFields() {
+        textTitle.setText("");
+        textBody.setText("");
+    }
+
+    // Helper method to update the change flag and button
+    private void updateChanges() {
+        change = true;
+        buttonUpdate.setEnabled(true);
+    }
+
+    // Helper method to get the path from the selected node
+    private String getPathFromTree(DefaultMutableTreeNode node) {
+        StringBuilder pathBuilder = new StringBuilder();
+        Object[] nodes = node.getPath();
+        for (int i = 1; i < nodes.length; i++) {
+            DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) nodes[i];
+            Object userObject = currentNode.getUserObject();
+            if (userObject instanceof String) {
+                String nodeName = (String) userObject;
+                pathBuilder.append(nodeName);
+                if (i != nodes.length - 1) {
+                    pathBuilder.append("/");
+                }
+            }
+        }
+        return pathBuilder.toString();
+    }
+}

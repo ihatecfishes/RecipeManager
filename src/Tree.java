@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Tree<T> {
-    private Node<T> root;
+    Node<T> root;
 
     public Tree() {
         root = null;
@@ -36,41 +36,29 @@ class Tree<T> {
         parentNode.removeChild(key);
     }
 
-    public void display() {
-        display(root, 0);
-    }
-
-    private void display(Node<T> node, int level) {
-        if (node != null) {
-            StringBuilder indent = new StringBuilder();
-            for (int i = 0; i < level; i++) {
-                indent.append("  ");
-            }
-
-            System.out.println(indent.toString() + node.key);
-            for (Node<T> child : node.children) {
-                display(child, level + 1);
-            }
-        }
-    }
-
-    public Node<T> findNode(String key) {
-        return findNode(root, key);
+    public Node<T> findNode(String path) {
+        return findNode(root, path);
     }
 
     private Node<T> findNode(Node<T> currentNode, String path) {
-        String[] keys = path.split("/");
-        for (String key : keys) {
-            if (currentNode == null || currentNode.children == null) {
-                return null;
-            }
-            currentNode = currentNode.findChild(key);
+        if (currentNode == null || path == null) {
+            return null;
         }
-        return currentNode;
-    }
 
-    public Node<T> getRoot() {
-        return root;
+        if (path.isEmpty()) {
+            return currentNode;
+        }
+
+        int delimiterIndex = path.indexOf('/');
+        if (delimiterIndex == -1) {
+            return currentNode.getChild(path);
+        }
+
+        String currentKey = path.substring(0, delimiterIndex);
+        String remainingPath = path.substring(delimiterIndex + 1);
+
+        Node<T> nextNode = currentNode.getChild(currentKey);
+        return findNode(nextNode, remainingPath);
     }
 
     public static class Node<T> {
@@ -84,32 +72,41 @@ class Tree<T> {
             this.children = new ArrayList<>();
         }
 
-        public void addChild(Node<T> child) {
-            children.add(child);
+        public String getKey() {
+            return key;
         }
 
-        public void removeChild(String key) {
-            Node<T> nodeToRemove = findChild(key);
-            if (nodeToRemove != null) {
-                children.remove(nodeToRemove);
-            }
+        public T getData() {
+            return data;
         }
 
-        public Node<T> findChild(String key) {
-            for (Node<T> child : children) {
-                if (child.key.equals(key)) {
-                    return child;
-                }
-            }
-            return null;
+        public void setData(T data) {
+            this.data = data;
         }
 
         public List<Node<T>> getChildren() {
             return children;
         }
 
-        public T getData() {
-            return data;
+        public void addChild(Node<T> child) {
+            children.add(child);
+        }
+
+        public void removeChild(String key) {
+            children.removeIf(node -> node.getKey().equals(key));
+        }
+
+        public Node<T> getChild(String key) {
+            for (Node<T> child : children) {
+                if (child.getKey().equals(key)) {
+                    return child;
+                }
+            }
+            return null;
+        }
+
+        public String getName() {
+            return key;
         }
     }
 }

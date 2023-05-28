@@ -2,9 +2,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 
-/**
- * Recipe
- */
 public class Recipe {
 	private String name;
 	private String description;
@@ -19,14 +16,21 @@ public class Recipe {
 
 	public Recipe(String name) {
 		this.name = name;
+		this.ingredients = new HashMap<>();
+		this.images = new ArrayList<>();
+		this.tags = new ArrayList<>();
+		this.nutrition = new EnumMap<>(Nutrition.class);
 	}
 
-	public Recipe() { }
+
+	public String getBody() {
+		return content;
+	}
 
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -42,7 +46,7 @@ public class Recipe {
 	public String getContent() {
 		return content;
 	}
-	
+
 	public void setContent(String content) {
 		this.content = content;
 	}
@@ -74,9 +78,9 @@ public class Recipe {
 	public void setIngredient(Ingredient ingredient, Unit unit) {
 		ingredients.put(ingredient, unit);
 	}
-	
+
 	public void setIngredient(Ingredient ingredient, float value) {
-		
+		// Implement your logic here
 	}
 
 	public void removeIngredient(Ingredient ingredient) {
@@ -104,7 +108,7 @@ public class Recipe {
 	}
 
 	public void setNutrition(Nutrition nutrition, float value) {
-
+		// Implement your logic here
 	}
 
 	public void removeNutrition(Nutrition nutrition) {
@@ -112,10 +116,12 @@ public class Recipe {
 	}
 
 	public float calculatePrice() {
+		// Implement your logic here
 		return 0;
 	}
 
 	public EnumMap<Nutrition, Unit> calculateNutrition() {
+		// Implement your logic here
 		return null;
 	}
 
