@@ -2,7 +2,12 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 public class MainForm {
 
@@ -114,6 +119,7 @@ public class MainForm {
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         // Save changes
                         // TODO: Implement save logic
+                        saveRecipe();
                     }
                 }
 
@@ -122,7 +128,19 @@ public class MainForm {
             }
         });
 
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveRecipe();
+            }
+        });
 
+        saveAsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveRecipeAs();
+            }
+        });
 
         buttonUpdate.addActionListener(new ActionListener() {
             @Override
@@ -144,6 +162,28 @@ public class MainForm {
             }
         });
 
+        openButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+                fileChooser.setCurrentDirectory(new File("..\\Recipes"));
+
+                int result = fileChooser.showOpenDialog(panelMain);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    openRecipe(selectedFile);
+                }
+            }
+        });
+
+        newButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearFields();
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -187,7 +227,6 @@ public class MainForm {
         }
     }
 
-
     // Helper method to update the selection fields
     private void updateSelection(Recipe recipe) {
         textTitle.setText(recipe.getName());
@@ -199,6 +238,7 @@ public class MainForm {
     private void clearFields() {
         textTitle.setText("");
         textBody.setText("");
+        textNotes.setText("");
     }
 
     // Helper method to update the change flag and button
@@ -223,5 +263,55 @@ public class MainForm {
             }
         }
         return pathBuilder.toString();
+    }
+
+    // Helper method to save the current recipe
+    private void saveRecipe() {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+        if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
+            return;
+
+        Recipe recipe = (Recipe) selectedNode.getUserObject();
+        String filePath = recipe.getName() + ".txt";
+
+        try {
+            FileWriter writer = new FileWriter(filePath);
+            writer.write(textBody.getText());
+            writer.close();
+            JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(panelMain, "Failed to save recipe.");
+        }
+    }
+
+    // Helper method to save the current recipe as a new file
+    private void saveRecipeAs() {
+        String recipeName = JOptionPane.showInputDialog(panelMain, "Enter recipe name:");
+        if (recipeName == null || recipeName.isEmpty())
+            return;
+
+        String filePath = recipeName + ".txt";
+
+        try {
+            FileWriter writer = new FileWriter(filePath);
+            writer.write(textBody.getText());
+            writer.close();
+            JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(panelMain, "Failed to save recipe.");
+        }
+    }
+
+    // Helper method to open a recipe file
+    private void openRecipe(File file) {
+        try {
+            String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
+            textBody.setText(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(panelMain, "Failed to open recipe file.");
+        }
     }
 }
