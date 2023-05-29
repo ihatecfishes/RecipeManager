@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.Document;
+import javax.swing.text.BadLocationException;
 
 
 public class MainForm {
@@ -36,6 +38,7 @@ public class MainForm {
     private JEditorPane editorPane2;
     private JTextArea textArea1;
     private JTree recipeTree;
+    //private JButton imagesButton;
 
     private Tree<Recipe> recipes = new Tree<>();
 
@@ -184,6 +187,22 @@ public class MainForm {
                 clearFields();
             }
         });
+
+        /*
+        imagesButton.addActionListener(new ActionListener() { // ActionListener for "Images" button
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileNameExtensionFilter("JPEG Images", "jpg", "jpeg"));
+
+                int option = fileChooser.showOpenDialog(panelMain);
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    displayImage(selectedFile);
+                }
+            }
+        });
+         */
     }
 
     public static void main(String[] args) {
@@ -314,4 +333,19 @@ public class MainForm {
             JOptionPane.showMessageDialog(panelMain, "Failed to open recipe file.");
         }
     }
+
+    /*
+    // Helper method to display the selected image
+    private void displayImage(File imageFile) {
+        try {
+            String imagePath = imageFile.getAbsolutePath();
+            String imageTag = "<img src='file:" + imagePath + "'>";
+
+            Document doc = editorPane2.getDocument();
+            doc.insertString(doc.getLength(), imageTag, null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 }
