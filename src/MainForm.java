@@ -1,19 +1,16 @@
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.Document;
-import javax.swing.text.BadLocationException;
 
 
 public class MainForm {
-
-    private ArrayList<Ingredient> ingredients = new ArrayList<>();
     private boolean change = false;
     private JPanel panelMain;
     private JList listRecipes;
@@ -31,23 +28,30 @@ public class MainForm {
     private JButton button1;
     private JButton buttonUpdate;
     private JButton addFolderButton; // New "Add Folder" button
-    private JSpinner spinner1;
+    private JSpinner spinnerServings;
     private JTabbedPane tabbedPane3;
-    private JTable table1;
-    private JTable table2;
+    private JTable tableIngredients;
+    private JTable tableNutrition;
     private JEditorPane editorPane2;
     private JTextArea textArea1;
     private JTree recipeTree;
     //private JButton imagesButton;
 
     private Tree<Recipe> recipes = new Tree<>();
+    private Tree<Ingredient> ingredients = new Tree<>();
 
     private JTree treeRecipes;
+    private JButton buttonTAdd;
+    private JButton buttonTRemove;
+    private JButton buttonTEdit;
 
     private JList<Ingredient> listIngredients;
 
     public MainForm() {
         updateTree();
+        updateIngredients();
+        updateNutrition();
+
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,24 +114,26 @@ public class MainForm {
                 Object userObject = selectedNode.getUserObject();
                 String path = getPathFromTree(selectedNode);
 
+                System.out.println(path);
+
                 if (userObject instanceof Recipe) {
-                    Recipe recipe = (Recipe) userObject;
+                    Recipe recipe = recipes.findNode(path).getData();
                     updateSelection(recipe);
                 }
 
-                textField2.setText(path);
-
-                if (change) {
-                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
-                    if (dialogResult == JOptionPane.YES_OPTION) {
-                        // Save changes
-                        // TODO: Implement save logic
-                        saveRecipe();
-                    }
-                }
+//                textField2.setText(path);
+//
+//                if (change) {
+//                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
+//                    if (dialogResult == JOptionPane.YES_OPTION) {
+//                        // Save changes
+//                        // TODO: Implement save logic
+//                        saveRecipe();
+//                    }
+//                }
 
                 change = false;
-                buttonUpdate.setEnabled(false);
+                buttonUpdate.setEnabled(true);
             }
         });
 
@@ -159,6 +165,8 @@ public class MainForm {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
                 if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
                     return;
+
+                selectedNode.getPath();
 
                 Recipe recipe = (Recipe) selectedNode.getUserObject();
                 String newTitle = textTitle.getText();
@@ -233,6 +241,64 @@ public class MainForm {
         addNodes(root, recipes.root);
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
         treeRecipes.setModel(treeModel);
+    }
+
+    private void updateIngredients() {
+        String[] columns = new String[] {"Ingredient", "Amount", "Unit"};
+        TableModel ingredientsModel = new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                // TODO: implement after update button is fixed
+                return 3;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 3;
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                // TODO: implement after update button is fixed
+                return null;
+            }
+
+            @Override
+            public String getColumnName(int column) {
+                return columns[column];
+            }
+        };
+
+        tableIngredients.setModel(ingredientsModel);
+    }
+
+    private void updateNutrition() {
+        String[] columns = new String[] {"Nutrition", "Amount", "Unit"};
+        TableModel nutritionModel = new AbstractTableModel() {
+            @Override
+            public int getRowCount() {
+                // TODO: implement after update button is fixed
+                return 3;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 3;
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                // TODO: implement after update button is fixed
+                return null;
+            }
+
+            @Override
+            public String getColumnName(int column) {
+                return columns[column];
+            }
+        };
+
+        tableIngredients.setModel(nutritionModel);
     }
 
     // Helper method to add nodes recursively to the tree view
