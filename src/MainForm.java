@@ -141,7 +141,15 @@ public class MainForm {
         saveAsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveRecipeAs();
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+
+                int result = fileChooser.showSaveDialog(panelMain);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    saveRecipeAs(selectedFile);
+                }
             }
         });
 
@@ -171,7 +179,6 @@ public class MainForm {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
-                fileChooser.setCurrentDirectory(new File("..\\Recipes"));
 
                 int result = fileChooser.showOpenDialog(panelMain);
                 if (result == JFileChooser.APPROVE_OPTION) {
@@ -305,12 +312,11 @@ public class MainForm {
     }
 
     // Helper method to save the current recipe as a new file
-    private void saveRecipeAs() {
-        String recipeName = JOptionPane.showInputDialog(panelMain, "Enter recipe name:");
-        if (recipeName == null || recipeName.isEmpty())
+    private void saveRecipeAs(File selectedFile) {
+        if (selectedFile == null)
             return;
 
-        String filePath = recipeName + ".txt";
+        String filePath = selectedFile.getAbsolutePath();
 
         try {
             FileWriter writer = new FileWriter(filePath);
@@ -347,5 +353,5 @@ public class MainForm {
             e.printStackTrace();
         }
     }
-    */
+     */
 }
