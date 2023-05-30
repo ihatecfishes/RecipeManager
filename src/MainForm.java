@@ -114,8 +114,6 @@ public class MainForm {
                 Object userObject = selectedNode.getUserObject();
                 String path = getPathFromTree(selectedNode);
 
-                System.out.println(path);
-
                 if (userObject instanceof Recipe) {
                     Recipe recipe = recipes.findNode(path).getData();
                     updateSelection(recipe);
@@ -165,8 +163,6 @@ public class MainForm {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
                 if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
                     return;
-
-                selectedNode.getPath();
 
                 Recipe recipe = (Recipe) selectedNode.getUserObject();
                 String newTitle = textTitle.getText();
