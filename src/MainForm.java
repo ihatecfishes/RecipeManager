@@ -235,20 +235,44 @@ public class MainForm {
         });
     }
     public static void main(String[] args) {
+
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } catch (InstantiationException e) {
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         JFrame frame = new JFrame("Recipe Manager");
         frame.setContentPane(new MainForm().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
+
+        /*
+        // Set the color theme
+        Color blueColor = new Color(84, 84, 180);
+        Color purpleColor = new Color(120, 120, 255);
+
+        UIManager.put("TabbedPane.selected", blueColor);
+        UIManager.put("TabbedPane.contentAreaColor", purpleColor);
+        UIManager.put("List.selectionBackground", blueColor);
+        UIManager.put("List.selectionForeground", Color.WHITE);
+        UIManager.put("TextArea.selectionBackground", blueColor);
+        UIManager.put("TextArea.selectionForeground", Color.WHITE);
+        UIManager.put("TextField.selectionBackground", purpleColor);
+        UIManager.put("TextField.selectionForeground", Color.WHITE);
+        UIManager.put("TextPane.selectionBackground", blueColor);
+        UIManager.put("TextPane.selectionForeground", Color.WHITE);
+        UIManager.put("EditorPane.selectionBackground", blueColor);
+        UIManager.put("EditorPane.selectionForeground", Color.WHITE);
+        UIManager.put("Tree.selectionBackground", blueColor);
+        UIManager.put("Tree.selectionForeground", Color.WHITE);
+         */
 
     private <T extends JDialog> void displayDialog(T dialog) {
         dialog.pack();
