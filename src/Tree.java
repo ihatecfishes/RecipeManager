@@ -19,9 +19,6 @@ class Tree<T> {
         }
 
         Node<T> parentNode = findNode(root, path);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Invalid path");
-        }
 
         Node<T> newNode = new Node<>(key, data);
         parentNode.addChild(newNode);
@@ -61,9 +58,28 @@ class Tree<T> {
         return findNode(nextNode, remainingPath);
     }
 
+
+    public void display() {
+        display(root, 0);
+    }
+
+    private void display(Node<T> node, int level) {
+        if (node != null) {
+            StringBuilder indent = new StringBuilder();
+            for (int i = 0; i < level; i++) {
+                indent.append("  ");
+            }
+
+            System.out.println(indent.toString() + node.key);
+            for (Node<T> child : node.children) {
+                display(child, level + 1);
+            }
+        }
+    }
+
     public static class Node<T> {
         private String key;
-        private T data;
+        public T data;
         private List<Node<T>> children;
 
         public Node(String key, T data) {
@@ -109,4 +125,21 @@ class Tree<T> {
             return key;
         }
     }
+
+/*    public static void main(String[] args) {
+        Tree<Integer> tree = new Tree<>();
+        tree.addNode("A", 1, "/");
+
+        tree.addNode("B", 2, "");
+
+        tree.addNode("C", 3, "");
+        tree.addNode("D", 4, "B/");
+        tree.addNode("E", 5, "B/");
+        tree.addNode("F", 6, "C/");
+        System.out.println(tree.findNode("B").getData());
+
+
+        tree.display();
+
+    }*/
 }
