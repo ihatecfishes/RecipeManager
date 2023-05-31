@@ -413,6 +413,7 @@ public class MainForm {
         UIManager.put("Tree.selectionBackground", blueColor);
         UIManager.put("Tree.selectionForeground", Color.WHITE);
          */
+    }
 
     private <T extends JDialog> void displayDialog(T dialog) {
         dialog.pack();
