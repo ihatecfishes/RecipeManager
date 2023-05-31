@@ -3,7 +3,25 @@ abstract class Measurement {
 	public abstract float revert(float value);
 	public abstract String getName();
 	public abstract String getAbbreviation();
-	public abstract MeasurementTypes getType();
+	public abstract MeasurementType getType();
+
+	@Override
+	public String toString() {
+		return getAbbreviation();
+	}
+}
+
+class Measurements {
+	public static Measurement[] mass = new Measurement[] {
+			new Kilogram(),
+	};
+	public static Measurement[] volume = new Measurement[] {
+			new MetersSquared(),
+	};
+	public static Measurement[] quantity = new Measurement[] {
+			new Quantity(),
+			new Pieces(),
+	};
 }
 
 class Kilogram extends Measurement {
@@ -28,8 +46,8 @@ class Kilogram extends Measurement {
 	}
 
 	@Override
-	public MeasurementTypes getType() {
-		return MeasurementTypes.Mass;
+	public MeasurementType getType() {
+		return MeasurementType.Mass;
 	}
 }
 
@@ -56,8 +74,8 @@ class MetersSquared extends Measurement {
 	}
 
 	@Override
-	public MeasurementTypes getType() {
-		return MeasurementTypes.Volume;
+	public MeasurementType getType() {
+		return MeasurementType.Volume;
 	}
 }
 
@@ -84,8 +102,8 @@ class Quantity extends Measurement {
 	}
 
 	@Override
-	public MeasurementTypes getType() {
-		return MeasurementTypes.Quantity;
+	public MeasurementType getType() {
+		return MeasurementType.Quantity;
 	}
 }
 
@@ -112,7 +130,7 @@ class Pieces extends Measurement {
 	}
 
 	@Override
-	public MeasurementTypes getType() {
-		return MeasurementTypes.Quantity;
+	public MeasurementType getType() {
+		return MeasurementType.Quantity;
 	}
 }

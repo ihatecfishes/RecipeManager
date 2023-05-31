@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -44,7 +45,7 @@ public class MainForm {
     private Tree<Recipe> recipes = new Tree<>();
     private boolean change = false;
     // TODO: ingredients temporary
-    private HashMap<String, Unit> ingredients;
+    private ArrayList<Unit> ingredients = new ArrayList<>();
 
     public MainForm() {
         updateTree();
@@ -219,8 +220,17 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 IngredientDialog ingredientDialog = new IngredientDialog();
-                ingredientDialog.setTitle("Add Ingredient");
-                displayDialog(ingredientDialog);
+                if (ingredientDialog.display(panelMain) == 0) {
+                    Unit unit = new Unit(
+                            ingredientDialog.getIngredientName(),
+                            ingredientDialog.getIngredientUnit(),
+                            ingredientDialog.getIngredientAmount()
+                    );
+
+                    ingredients.add(unit);
+
+                    updateIngredients();
+                }
             }
         });
     }
@@ -260,7 +270,7 @@ public class MainForm {
             @Override
             public int getRowCount() {
                 // TODO: implement after update button is fixed
-                return 3;
+                return ingredients.size();
             }
 
             @Override
@@ -271,7 +281,18 @@ public class MainForm {
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
                 // TODO: implement after update button is fixed
-                return null;
+                switch (columnIndex) {
+                    case 0 -> {
+                        return ingredients.get(rowIndex).getName();
+                    }
+                    case 1 -> {
+                        return ingredients.get(rowIndex).getValue();
+                    }
+                    case 2 -> {
+                        return ingredients.get(rowIndex).getMeasurement();
+                    }
+                }
+                return "";
             }
 
             @Override
@@ -283,6 +304,7 @@ public class MainForm {
         tableIngredients.setModel(ingredientsModel);
         tableIngredients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableIngredients.setRowSelectionAllowed(true);
+        tableIngredients.getTableHeader().setReorderingAllowed(false);
     }
 
     private void updateNutrition() {
@@ -314,6 +336,7 @@ public class MainForm {
         tableNutrition.setModel(nutritionModel);
         tableNutrition.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableNutrition.setRowSelectionAllowed(true);
+        tableNutrition.getTableHeader().setReorderingAllowed(false);
     }
 
     // Helper method to add nodes recursively to the tree view
