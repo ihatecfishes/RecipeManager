@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -41,9 +40,11 @@ public class MainForm {
     private JButton buttonTAdd;
     private JButton buttonTRemove;
     private JButton buttonTEdit;
+    private JComboBox comboMeasurement;
 
     private Tree<Recipe> recipes = new Tree<>();
     private boolean change = false;
+    private boolean enableComboMeasurement = true;
     // TODO: ingredients temporary
     private ArrayList<Unit> ingredients = new ArrayList<>();
 
@@ -51,6 +52,8 @@ public class MainForm {
         updateTree();
         updateIngredients();
         updateNutrition();
+        updateSpinner();
+
 
         removeButton.addActionListener(new ActionListener() {
             @Override
@@ -215,12 +218,12 @@ public class MainForm {
         });
          */
 
-        // Add ingredient/nutrion
+        // Add ingredient/nutrition
         buttonTAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 IngredientDialog ingredientDialog = new IngredientDialog();
-                if (ingredientDialog.display(panelMain) == 0) {
+                if (ingredientDialog.displayAdd(panelMain) == 0) {
                     Unit unit = new Unit(
                             ingredientDialog.getIngredientName(),
                             ingredientDialog.getIngredientUnit(),
@@ -231,6 +234,120 @@ public class MainForm {
 
                     updateIngredients();
                 }
+            }
+        });
+
+        buttonTRemove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableIngredients.getSelectedRow();
+                if (selectedRow == -1) {
+                    return;
+                }
+                ingredients.remove(selectedRow);
+                updateIngredients();
+            }
+        });
+
+        buttonTEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableIngredients.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(panelMain,
+                            "No ingredient is selected.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                IngredientDialog ingredientDialog = new IngredientDialog();
+                if (ingredientDialog.displayEdit(panelMain, ingredients.get(selectedRow)) == 0) {
+                    Unit unit = new Unit(
+                            ingredientDialog.getIngredientName(),
+                            ingredientDialog.getIngredientUnit(),
+                            ingredientDialog.getIngredientAmount()
+                    );
+
+                    ingredients.set(selectedRow, unit);
+                    updateIngredients();
+                }
+            }
+        });
+
+        spinnerServings.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int selectedRow = tableIngredients.getSelectedRow();
+                updateIngredients();
+                tableIngredients.setRowSelectionInterval(selectedRow, selectedRow);
+            }
+        });
+
+        tableIngredients.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                enableComboMeasurement = false;
+
+                comboMeasurement.removeAllItems();
+                comboMeasurement.setEnabled(false);
+
+                int selectedRow = tableIngredients.getSelectedRow();
+                if (selectedRow == -1) {
+                    return;
+                }
+
+                comboMeasurement.setEnabled(true);
+
+                Measurement measurement = ingredients.get(selectedRow).getMeasurement();
+                MeasurementType type = measurement.getType();
+                switch (type) {
+                    case Mass -> {
+                        for (Measurement m : Measurements.mass) {
+                            comboMeasurement.addItem(m);
+                        }
+                    }
+                    case Volume -> {
+                        for (Measurement m : Measurements.volume) {
+                            comboMeasurement.addItem(m);
+                        }
+                    }
+                    case Quantity -> {
+                        for (Measurement m : Measurements.quantity) {
+                            comboMeasurement.addItem(m);
+                        }
+                    }
+                }
+
+                comboMeasurement.setSelectedItem(measurement);
+
+                enableComboMeasurement = true;
+            }
+        });
+
+        comboMeasurement.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!enableComboMeasurement) {
+                    return;
+                }
+                if (comboMeasurement.getSelectedItem() == null) {
+                    return;
+                }
+
+
+                int selectedRow = tableIngredients.getSelectedRow();
+                if (selectedRow == -1) {
+                    return;
+                }
+
+                Measurement measurement = (Measurement) comboMeasurement.getSelectedItem();
+                Unit unit = ingredients.get(selectedRow);
+                unit.setValue(measurement.convert(unit.getMeasurement().revert(unit.getValue())));
+                unit.setMeasurement(measurement);
+
+                updateIngredients();
+                tableIngredients.setRowSelectionInterval(selectedRow, selectedRow);
             }
         });
     }
@@ -254,6 +371,12 @@ public class MainForm {
         dialog.pack();
         dialog.setLocationRelativeTo(panelMain);
         dialog.setVisible(true);
+    }
+
+    private void updateSpinner() {
+        SpinnerNumberModel model = new SpinnerNumberModel((float) 1, (float) 0, null, (float) 1);
+        spinnerServings.setModel(model);
+        spinnerServings.setValue((float) 1);
     }
 
     // Helper method to update the tree view
@@ -286,7 +409,7 @@ public class MainForm {
                         return ingredients.get(rowIndex).getName();
                     }
                     case 1 -> {
-                        return ingredients.get(rowIndex).getValue();
+                        return ingredients.get(rowIndex).getValue() * (Float) spinnerServings.getValue();
                     }
                     case 2 -> {
                         return ingredients.get(rowIndex).getMeasurement();
@@ -305,6 +428,10 @@ public class MainForm {
         tableIngredients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableIngredients.setRowSelectionAllowed(true);
         tableIngredients.getTableHeader().setReorderingAllowed(false);
+        tableIngredients.getColumnModel().getColumn(0).setMinWidth(120);
+        tableIngredients.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+
     }
 
     private void updateNutrition() {
@@ -337,6 +464,9 @@ public class MainForm {
         tableNutrition.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableNutrition.setRowSelectionAllowed(true);
         tableNutrition.getTableHeader().setReorderingAllowed(false);
+        tableNutrition.getColumnModel().getColumn(0).setMinWidth(120);
+        tableNutrition.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
     }
 
     // Helper method to add nodes recursively to the tree view

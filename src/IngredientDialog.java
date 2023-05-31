@@ -8,7 +8,7 @@ public class IngredientDialog extends JDialog {
     private JTextField textName;
     private JTextField textAmount;
     private JComboBox comboType;
-    private JComboBox comboUnit;
+    private JComboBox comboMeasurement;
 
     private String ingredientName;
     private float ingredientAmount;
@@ -78,7 +78,7 @@ public class IngredientDialog extends JDialog {
             ingredientName = textName.getText();
             ingredientAmount = Float.parseFloat(textAmount.getText());
             ingredientType = (MeasurementType) comboType.getSelectedItem();
-            ingredientUnit = (Measurement) comboUnit.getSelectedItem();
+            ingredientUnit = (Measurement) comboMeasurement.getSelectedItem();
         }
         catch (Exception e) {
             JOptionPane.showMessageDialog(contentPane,
@@ -99,23 +99,23 @@ public class IngredientDialog extends JDialog {
     }
 
     private void updateUnits() {
-        comboUnit.removeAllItems();
+        comboMeasurement.removeAllItems();
 
         MeasurementType measurementType = (MeasurementType) comboType.getSelectedItem();
         switch (measurementType) {
             case Mass -> {
-                for (Measurement measurement : Measurements.mass) {
-                    comboUnit.addItem(measurement);
+                for (Measurement m : Measurements.mass) {
+                    comboMeasurement.addItem(m);
                 }
             }
             case Volume -> {
-                for (Measurement measurement : Measurements.volume) {
-                    comboUnit.addItem(measurement);
+                for (Measurement m : Measurements.volume) {
+                    comboMeasurement.addItem(m);
                 }
             }
             case Quantity -> {
-                for (Measurement measurement : Measurements.quantity) {
-                    comboUnit.addItem(measurement);
+                for (Measurement m : Measurements.quantity) {
+                    comboMeasurement.addItem(m);
                 }
             }
         }
@@ -144,11 +144,25 @@ public class IngredientDialog extends JDialog {
         System.exit(0);
     }
 
-    public int display(JPanel parent) {
+    public int displayAdd(JPanel parent) {
         this.pack();
         this.setLocationRelativeTo(parent);
         this.setTitle("Add Ingredient");
         this.setVisible(true);
+        return exitState;
+    }
+
+    public int displayEdit(JPanel parent, Unit ingredient) {
+        textName.setText(ingredient.getName());
+        textAmount.setText(((Float) ingredient.getValue()).toString());
+        comboType.setSelectedItem(ingredient.getMeasurement().getType());
+        comboMeasurement.setSelectedItem(ingredient.getMeasurement());
+
+        this.pack();
+        this.setLocationRelativeTo(parent);
+        this.setTitle("Edit Ingredient");
+        this.setVisible(true);
+
         return exitState;
     }
 }
