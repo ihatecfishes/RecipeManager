@@ -393,6 +393,8 @@ public class MainForm {
         frame.pack();
         frame.setVisible(true);
 
+    }
+
         /*
         // Set the color theme
         Color blueColor = new Color(84, 84, 180);
@@ -413,7 +415,6 @@ public class MainForm {
         UIManager.put("Tree.selectionBackground", blueColor);
         UIManager.put("Tree.selectionForeground", Color.WHITE);
          */
-    }
 
     private <T extends JDialog> void displayDialog(T dialog) {
         dialog.pack();
