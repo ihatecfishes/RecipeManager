@@ -49,6 +49,8 @@ public class MainForm {
 
     public MainForm() {
         updateTree();
+        recipes.addNode("Recipes",null,"");
+
         updateIngredients();
         updateNutrition();
 
@@ -90,6 +92,7 @@ public class MainForm {
                 }
 
                 updateTree();
+                recipes.display();
             }
         });
 
@@ -111,26 +114,35 @@ public class MainForm {
                 if (selectedNode == null)
                     return;
 
-                Object userObject = selectedNode.getUserObject();
                 String path = getPathFromTree(selectedNode);
 
-                if (userObject instanceof Recipe) {
-                    Recipe recipe = recipes.findNode(path).getData();
-                    updateSelection(recipe);
+                textField2.setText(path);
+                System.out.println(path);
+
+                if(path.equals("")) return ;
+                Recipe recipe = recipes.findNode(path).getData();
+                System.out.println(recipe.getName());
+
+
+
+                updateSelection(recipe);
+
+
+                if (change) {
+                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        // Save changes
+                        // TODO: Implement save logic
+                    }
                 }
 
-//                textField2.setText(path);
-//
-//                if (change) {
-//                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
-//                    if (dialogResult == JOptionPane.YES_OPTION) {
-//                        // Save changes
-//                        // TODO: Implement save logic
-//                        saveRecipe();
-//                    }
-//                }
-
                 change = false;
+                buttonUpdate.setEnabled(textArea1.getText().isEmpty());
+                buttonUpdate.setEnabled(textTitle.getText().isEmpty());
+                buttonUpdate.setEnabled(textNotes.getText().isEmpty());
+                buttonUpdate.setEnabled(textBody.getText().isEmpty());
+
+
                 buttonUpdate.setEnabled(true);
             }
         });
@@ -141,6 +153,7 @@ public class MainForm {
                 saveRecipe();
             }
         });
+
 
         saveAsButton.addActionListener(new ActionListener() {
             @Override
@@ -161,19 +174,29 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
-                    return;
 
-                Recipe recipe = (Recipe) selectedNode.getUserObject();
+                String path = getPathFromTree(selectedNode);
+
+
+
+
                 String newTitle = textTitle.getText();
                 String newBody = textBody.getText();
                 String newNotes = textNotes.getText();
+                String des = textArea1.getText();
 
-                recipe.setName(newTitle);
-                recipe.setContent(newBody);
-                recipe.setNotes(newNotes);
+                recipes.findNode(path).data.setName(newTitle);
+                recipes.findNode(path).data.setContent(newBody);
+                recipes.findNode(path).data.setNotes(newNotes);
+                recipes.findNode(path).data.setDescription(des);
+
+                System.out.println(1);
+                System.out.println(recipes.findNode(path).data.getContent());
+
+
 
                 updateTree();
+
             }
         });
 
@@ -386,6 +409,7 @@ public class MainForm {
         textTitle.setText(recipe.getName());
         textBody.setText(recipe.getContent());
         textNotes.setText(recipe.getNotes());
+        textArea1.setText(recipe.getDescription());
     }
 
     // Helper method to clear the selection fields
