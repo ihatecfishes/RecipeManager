@@ -1,4 +1,4 @@
-enum MeasurementTypes {
+enum MeasurementType {
     Mass,
     Volume,
     Quantity
