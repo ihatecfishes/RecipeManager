@@ -1,14 +1,24 @@
 class Unit {
-	Measurement measurement;
-	float value;
+	private String name;
+	private Measurement measurement;
+	private float value;
 
-	public Unit(Measurement measurement, float value) {
-		this(measurement);
+	public Unit(String name, Measurement measurement, float value) {
+		this.name = name;
+		this.measurement = measurement;
 		this.value = value;
 	}
 
 	public Unit(Measurement measurement) {
 		this.measurement = measurement;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Measurement getMeasurement() {
@@ -20,7 +30,7 @@ class Unit {
 		this.measurement = measurement;
 	}
 
-	public float getvalue() {
+	public float getValue() {
 		return value;
 	}
 

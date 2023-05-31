@@ -3,6 +3,7 @@ import javax.swing.event.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -48,6 +49,7 @@ public class MainForm {
     private JList<Ingredient> listIngredients;
 
     public MainForm() {
+
         updateTree();
         updateIngredients();
         updateNutrition();
@@ -216,20 +218,64 @@ public class MainForm {
          */
     }
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        } catch (UnsupportedLookAndFeelException e) {
-        } catch (ClassNotFoundException e) {
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {
+    class JPanelGradient extends JPanel {
+
+        protected void paintComponent(Graphics g){
+            Graphics2D g2d = (Graphics2D) g;
+            int width = getWidth();
+            int height = getHeight();
+
+            Color color1 = new Color(52,143,80);
+            Color color2 = new Color(86,180,211);
+            GradientPaint gp = new GradientPaint(0,0, color1, 180, height, color2);
+            g2d.setPaint(gp);
+            g2d.fillRect(0,0,width,height);
         }
+    }
+
+    public static void main(String[] args) {
+
         JFrame frame = new JFrame("Recipe Manager");
         frame.setContentPane(new MainForm().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        /*
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        // Set the color theme
+        Color blueColor = new Color(84, 84, 180);
+        Color purpleColor = new Color(120, 120, 255);
+
+        UIManager.put("TabbedPane.selected", blueColor);
+        UIManager.put("TabbedPane.contentAreaColor", purpleColor);
+        UIManager.put("List.selectionBackground", blueColor);
+        UIManager.put("List.selectionForeground", Color.WHITE);
+        UIManager.put("TextArea.selectionBackground", blueColor);
+        UIManager.put("TextArea.selectionForeground", Color.WHITE);
+        UIManager.put("TextField.selectionBackground", purpleColor);
+        UIManager.put("TextField.selectionForeground", Color.WHITE);
+        UIManager.put("TextPane.selectionBackground", blueColor);
+        UIManager.put("TextPane.selectionForeground", Color.WHITE);
+        UIManager.put("EditorPane.selectionBackground", blueColor);
+        UIManager.put("EditorPane.selectionForeground", Color.WHITE);
+        UIManager.put("Tree.selectionBackground", blueColor);
+        UIManager.put("Tree.selectionForeground", Color.WHITE);
+         */
+
     }
+
 
     // Helper method to update the tree view
     private void updateTree() {
