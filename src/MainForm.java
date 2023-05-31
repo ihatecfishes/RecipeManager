@@ -7,11 +7,11 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class MainForm {
-    private boolean change = false;
     private JPanel panelMain;
     private JList listRecipes;
     private JTabbedPane tabbedPane1;
@@ -36,16 +36,15 @@ public class MainForm {
     private JTextArea textArea1;
     private JTree recipeTree;
     //private JButton imagesButton;
-
-    private Tree<Recipe> recipes = new Tree<>();
-    private Tree<Ingredient> ingredients = new Tree<>();
-
     private JTree treeRecipes;
     private JButton buttonTAdd;
     private JButton buttonTRemove;
     private JButton buttonTEdit;
 
-    private JList<Ingredient> listIngredients;
+    private Tree<Recipe> recipes = new Tree<>();
+    private boolean change = false;
+    // TODO: ingredients temporary
+    private HashMap<String, Unit> ingredients;
 
     public MainForm() {
         updateTree();
@@ -214,6 +213,16 @@ public class MainForm {
             }
         });
          */
+
+        // Add ingredient/nutrion
+        buttonTAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IngredientDialog ingredientDialog = new IngredientDialog();
+                ingredientDialog.setTitle("Add Ingredient");
+                displayDialog(ingredientDialog);
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -228,7 +237,14 @@ public class MainForm {
         frame.setContentPane(new MainForm().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private <T extends JDialog> void displayDialog(T dialog) {
+        dialog.pack();
+        dialog.setLocationRelativeTo(panelMain);
+        dialog.setVisible(true);
     }
 
     // Helper method to update the tree view
@@ -266,6 +282,8 @@ public class MainForm {
         };
 
         tableIngredients.setModel(ingredientsModel);
+        tableIngredients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableIngredients.setRowSelectionAllowed(true);
     }
 
     private void updateNutrition() {
@@ -294,7 +312,9 @@ public class MainForm {
             }
         };
 
-        tableIngredients.setModel(nutritionModel);
+        tableNutrition.setModel(nutritionModel);
+        tableNutrition.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableNutrition.setRowSelectionAllowed(true);
     }
 
     // Helper method to add nodes recursively to the tree view

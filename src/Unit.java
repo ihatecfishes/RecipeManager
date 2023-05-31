@@ -20,7 +20,7 @@ class Unit {
 		this.measurement = measurement;
 	}
 
-	public float getvalue() {
+	public float getValue() {
 		return value;
 	}
 
