@@ -60,15 +60,39 @@ public class MainForm {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-                if (selectedNode == null || !(selectedNode.getUserObject() instanceof Recipe))
-                    return;
 
-                Recipe recipe = (Recipe) selectedNode.getUserObject();
-                recipes.removeNode(recipe.getName(), textField2.getText());
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+
+                String path = getPathFromTree(selectedNode);
+
+                StringBuilder rePath = new StringBuilder();
+
+                // append a string into StringBuilder input1
+                rePath.append(path);
+
+                // reverse StringBuilder input1
+                rePath.reverse();
+
+                String res = rePath.toString();
+
+                int delimiterIndex = res.indexOf('/');
+                if (delimiterIndex != -1) {
+                    res = res.substring(delimiterIndex + 1);
+
+                    rePath.delete(0, rePath.length());
+                    rePath.append(res);
+                    rePath.reverse();
+                    res = rePath.toString();
+                }
+                else res = "";
+
+                System.out.println(recipes.findNode(path).getName() + " " + res);
+
+                recipes.removeNode(recipes.findNode(path).getName(), res);
 
                 updateTree();
                 clearFields();
+                recipes.display();
             }
         });
 
@@ -120,7 +144,6 @@ public class MainForm {
                 String path = getPathFromTree(selectedNode);
 
                 textField2.setText(path);
-                System.out.println(path);
 
                 if(path.equals("")) return ;
                 Recipe recipe = recipes.findNode(path).getData();
