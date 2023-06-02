@@ -90,6 +90,10 @@ class Tree<T> {
             return key;
         }
 
+        public void setKey(String s){
+            key = s;
+        }
+
         public T getData() {
             return data;
         }

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -25,7 +26,7 @@ public class MainForm {
     private JButton buttonAdd;
     private JButton removeButton;
     private JTextField textField2;
-    private JButton button1;
+    private JButton searchButton;
     private JButton buttonUpdate;
     private JButton addFolderButton; // New "Add Folder" button
     private JSpinner spinnerServings;
@@ -219,12 +220,31 @@ public class MainForm {
                 System.out.println(1);
                 System.out.println(recipes.findNode(path).data.getContent());
 
-
+                recipes.findNode(path).setKey(newTitle);
 
                 updateTree();
 
             }
         });
+
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = textField2.getText();
+                if (!searchText.isEmpty()) {
+                    DefaultMutableTreeNode foundNode = findNodeByKey(searchText);
+                    if (foundNode != null) {
+                        treeRecipes.setSelectionPath(new TreePath(foundNode.getPath()));
+                    } else {
+                        JOptionPane.showMessageDialog(panelMain, "Node not found.", "Search", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+
+// Helper method to find a node by key in the recipe tree
+
+
 
         openButton.addActionListener(new ActionListener() {
             @Override
@@ -661,4 +681,17 @@ public class MainForm {
         }
     }
      */
+    private DefaultMutableTreeNode findNodeByKey(String key) {
+        Enumeration<TreeNode> nodes = ((DefaultMutableTreeNode) treeRecipes.getModel().getRoot()).depthFirstEnumeration();
+
+        while (((Enumeration<?>) nodes).hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
+            String path = getPathFromTree(node);
+                if ( recipes.findNode(path).getKey().equalsIgnoreCase(key)) {
+                    return node;
+                }
+            }
+
+        return null;
+    }
 }
