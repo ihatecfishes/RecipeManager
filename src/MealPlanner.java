@@ -1,6 +1,9 @@
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MealPlanner extends JFrame {
@@ -31,6 +34,9 @@ public class MealPlanner extends JFrame {
     private JTabbedPane tabbedPane3;
     private JTable tableIngredients;
     private JTable tableNutrition;
+    private JTextField textTitle;
+    private JTextField textDate;
+    private JButton setButton;
 
     Calendar cld = Calendar.getInstance();
     JDateChooser chosenDate = new JDateChooser(cld.getTime());
@@ -49,6 +55,19 @@ public class MealPlanner extends JFrame {
         chosenDate.setDateFormatString("dd/MM/yyyy");
         jPCalendar.add(chosenDate);
 
+        SetDate();
+
+    }
+
+    public void SetDate(){
+        setButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String dt = dateFormat.format(chosenDate.getDate());
+                textDate.setText(dt);
+            }
+        });
     }
 
     public static void main(String[] args){
