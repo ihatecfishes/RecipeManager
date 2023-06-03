@@ -26,9 +26,7 @@ class Tree<T> {
 
     public void removeNode(String key, String path) {
         Node<T> parentNode = findNode(root, path);
-        if (parentNode == null) {
-            throw new IllegalArgumentException("Invalid path");
-        }
+
 
         parentNode.removeChild(key);
     }
@@ -92,6 +90,10 @@ class Tree<T> {
             return key;
         }
 
+        public void setKey(String s){
+            key = s;
+        }
+
         public T getData() {
             return data;
         }
@@ -126,7 +128,7 @@ class Tree<T> {
         }
     }
 
-/*    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Tree<Integer> tree = new Tree<>();
         tree.addNode("A", 1, "/");
 
@@ -136,7 +138,7 @@ class Tree<T> {
         tree.addNode("D", 4, "B/");
         tree.addNode("E", 5, "B/");
         tree.addNode("F", 6, "C/");
-        System.out.println(tree.findNode("B").getData());
+        tree.removeNode("E","B/");
 
 
         tree.display();
