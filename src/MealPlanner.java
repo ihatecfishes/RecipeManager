@@ -1,21 +1,24 @@
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
+import java.util.Calendar;
 
 public class MealPlanner extends JFrame {
+    private JPanel jPCalendar;
+    private JPanel jPMealPlan;
     private JPanel panelMain;
     private JTabbedPane tabbedPane1;
+    private JTree treeRecipes;
     private JButton newButton;
     private JButton openButton;
     private JButton saveButton;
     private JButton saveAsButton;
-    private JTextField textTitle;
     private JButton buttonAdd;
     private JButton removeButton;
     private JButton addFolderButton;
     private JButton buttonUpdate;
     private JTextField textField2;
-    private JButton button1;
+    private JButton searchButton;
     private JTextPane textNotes;
     private JButton buttonTAdd;
     private JButton buttonTRemove;
@@ -28,13 +31,14 @@ public class MealPlanner extends JFrame {
     private JTabbedPane tabbedPane3;
     private JTable tableIngredients;
     private JTable tableNutrition;
-    private JPanel Calendar;
-    private JPanel JPMealPlan;
 
-    JDateChooser chooseDate = new JDateChooser();
+    Calendar cld = Calendar.getInstance();
+    JDateChooser chosenDate = new JDateChooser(cld.getTime());
+
+
 
     public MealPlanner(){
-        setContentPane(JPMealPlan);
+        setContentPane(jPMealPlan);
         setTitle("Meal Planner");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -42,7 +46,8 @@ public class MealPlanner extends JFrame {
         setVisible(true);
 
         // Calendar
-        Calendar.add(chooseDate);
+        chosenDate.setDateFormatString("dd/MM/yyyy");
+        jPCalendar.add(chosenDate);
 
     }
 
