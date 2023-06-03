@@ -1,3 +1,5 @@
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.*;
 
 public class MealPlanner extends JFrame {
@@ -29,12 +31,19 @@ public class MealPlanner extends JFrame {
     private JPanel Calendar;
     private JPanel JPMealPlan;
 
+    JDateChooser chooseDate = new JDateChooser();
+
     public MealPlanner(){
         setContentPane(JPMealPlan);
+        setTitle("Meal Planner");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(900,600);
         setVisible(true);
+
+        // Calendar
+        Calendar.add(chooseDate);
+
     }
 
     public static void main(String[] args){
