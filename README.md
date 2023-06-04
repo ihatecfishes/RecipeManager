@@ -1,4 +1,12 @@
-<a name="br1"></a> College of Engineering and Computer Science
+Instructions:
+
+Add recipe : click at the Add button, you must select the folder before you add
+Remove: select the recipe and click remove
+Add folder: you must select the folder, then click and tyoe in your folder name
+Update: When you modify the content of a recipe, remember to click
+
+
+
 COMP1020: Object-oriented Programming and Data Structures
  Spring 2023
 
@@ -279,3 +287,5 @@ Week 9
 • Write documentation
 
 4
+
+
