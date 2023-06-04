@@ -848,7 +848,7 @@ public class MainForm {
 
         try {
             FileWriter writer = new FileWriter(filePath);
-            writer.write(textSteps.getText());
+            writer.write(textDescription.getText());
             writer.close();
             JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
         } catch (IOException e) {
