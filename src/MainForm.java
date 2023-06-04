@@ -142,7 +142,7 @@ public class MainForm {
                     // Adding a folder
                     String folderName = textPath.getText();
                     int number = 1;
-                    Tree.Node<Recipe> rootNode = recipes.root;
+                    Tree.Node<Recipe> rootNode = recipes.findNode(folderName);
                     if (rootNode != null) {
                         int childCount = rootNode.getChildren().size();
                         number = childCount + 1;
@@ -150,7 +150,7 @@ public class MainForm {
 
                     // Add recipe
                     Recipe newRecipe = new Recipe("Untitled Recipe " + number);
-                    recipes.addNode(folderName, newRecipe, textPath.getText());
+                    recipes.addNode(newRecipe.getName(), newRecipe, textPath.getText());
                 }
 
                 updateTree();
