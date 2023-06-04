@@ -1,6 +1,6 @@
 # Instructions:
 
-** How to run **
+**How to run**
 
 1. Install IntelliJ IDEA (https://www.jetbrains.com/idea/)
 2. From the welcome screen, press "Get from VCS"
@@ -15,7 +15,7 @@
 12. On the top of the project window, select "Current File" in the run configuration dropdown
 13. Press Run to run the project
 
-** How to use **
+**How to use**
 
 - Add recipe : click at the Add button, you must select the folder before you add 
 - Remove: select the recipe and click remove 
