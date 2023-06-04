@@ -5,7 +5,9 @@
     <constraints>
       <xy x="225" y="124" width="453" height="272"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-5386533"/>
+    </properties>
     <border type="none"/>
     <children>
       <toolbar id="ec74c">
