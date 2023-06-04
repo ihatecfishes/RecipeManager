@@ -118,7 +118,16 @@ public class MainForm {
                 } else {
                     // Adding a folder
                     String folderName = textField2.getText();
-                    recipes.addNode(folderName, null, textField2.getText());
+                    int number = 1;
+                    Tree.Node<Recipe> rootNode = recipes.root;
+                    if (rootNode != null) {
+                        int childCount = rootNode.getChildren().size();
+                        number = childCount + 1;
+                    }
+
+                    // Add recipe
+                    Recipe newRecipe = new Recipe("Untitled Recipe " + number);
+                    recipes.addNode(folderName, newRecipe, textField2.getText());
                 }
 
                 updateTree();
