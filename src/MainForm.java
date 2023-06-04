@@ -7,10 +7,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -33,7 +31,7 @@ public class MainForm {
     private JButton buttonAddFolder; // New "Add Folder" button
     private JSpinner spinnerServings;
     private JTabbedPane tabbedTables;
-    private JTable tableIngredients;
+        private JTable tableIngredients;
     private JTable tableNutrition;
     private JEditorPane editorPane2;
     private JTextArea textDescription;
@@ -839,6 +837,90 @@ public class MainForm {
         }
     }
 
+    public static String convertJTableToString(JTable table) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Get column names
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            stringBuilder.append(table.getColumnName(i));
+            if (i < table.getColumnCount() - 1) {
+                stringBuilder.append("\t");
+            }
+        }
+        stringBuilder.append("\n");
+
+        // Get cell values
+        for (int row = 0; row < table.getRowCount(); row++) {
+            for (int column = 0; column < table.getColumnCount(); column++) {
+                Object value = table.getValueAt(row, column);
+                stringBuilder.append(value != null ? value.toString() : "");
+                if (column < table.getColumnCount() - 1) {
+                    stringBuilder.append("\t");
+                }
+            }
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public static JTextArea convertJTableToJTextArea(JTable table) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Get column names
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            stringBuilder.append(table.getColumnName(i));
+            if (i < table.getColumnCount() - 1) {
+                stringBuilder.append("\t");
+            }
+        }
+        stringBuilder.append("\n");
+
+        // Get cell values
+        for (int row = 0; row < table.getRowCount(); row++) {
+            for (int column = 0; column < table.getColumnCount(); column++) {
+                Object value = table.getValueAt(row, column);
+                stringBuilder.append(value != null ? value.toString() : "");
+                if (column < table.getColumnCount() - 1) {
+                    stringBuilder.append("\t");
+                }
+            }
+            stringBuilder.append("\n");
+        }
+
+        JTextArea textArea = new JTextArea(stringBuilder.toString());
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        return textArea;
+    }
+
+    public static JTextArea convertHashMapToJTextArea(HashMap<Date, ArrayList<String>> dataMap) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Map.Entry<Date, ArrayList<String>> entry : dataMap.entrySet()) {
+            Date date = entry.getKey();
+            ArrayList<String> list = entry.getValue();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = dateFormat.format(date);
+
+            stringBuilder.append("Date: ").append(dateString).append("\n");
+            for (String item : list) {
+                stringBuilder.append("- ").append(item).append("\n");
+            }
+            stringBuilder.append("\n");
+        }
+
+        JTextArea textArea = new JTextArea(stringBuilder.toString());
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        return textArea;
+    }
+
     // Helper method to save the current recipe as a new file
     private void saveRecipeAs(File selectedFile) {
         if (selectedFile == null)
@@ -848,7 +930,23 @@ public class MainForm {
 
         try {
             FileWriter writer = new FileWriter(filePath);
+            writer.write("Recipe: ");
+            writer.write(textTitle.getText());
+            writer.write("\n");
+            writer.write("\nDescription: \n");
             writer.write(textDescription.getText());
+            writer.write("\n");
+            writer.write("\nSteps: \n");
+            writer.write(textSteps.getText());
+            writer.write("\n");
+            //writer.write("\nIngredients: \n");
+            writer.write(convertJTableToJTextArea(tableIngredients).getText());
+            writer.write("\n");
+            //writer.write("\nNutrition: \n");
+            writer.write(convertJTableToJTextArea(tableNutrition).getText());
+            writer.write("\n");
+            writer.write("Meal Plans: \n");
+            writer.write(convertHashMapToJTextArea(planner).getText());
             writer.close();
             JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
         } catch (IOException e) {
@@ -856,65 +954,6 @@ public class MainForm {
             JOptionPane.showMessageDialog(panelMain, "Failed to save recipe.");
         }
     }
-
-        /* SAVE AS
-    // Helper method to save the current recipe as a new file
-    private void saveRecipeAs(File selectedFile, JPanel contentPane) {
-        if (selectedFile == null)
-            return;
-
-        String filePath = selectedFile.getAbsolutePath();
-
-        try {
-            FileWriter writer = new FileWriter(filePath);
-
-            writer.write("Recipes:\n");
-            DefaultTreeModel treeModel = (DefaultTreeModel) treeRecipes.getModel();
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeModel.getRoot();
-            saveNode(writer, root, 0);
-
-            writer.write("\n\nPlanner:\n");
-            for (Date date : planner.keySet()) {
-                writer.write(date.toString() + ":\n");
-                ArrayList<String> entries = planner.get(date);
-                if (entries != null) {
-                    for (String entry : entries) {
-                        writer.write(entry + "\n");
-                    }
-                }
-                writer.write("\n");
-            }
-
-            writer.close();
-            JOptionPane.showMessageDialog(contentPane, "Meal planner saved successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(contentPane, "Failed to save meal planner.");
-        }
-    }
-
-    // Helper method to recursively save each node in the recipe tree
-    private void saveNode(FileWriter writer, DefaultMutableTreeNode node, int level) throws IOException {
-        if (node != null) {
-            StringBuilder indent = new StringBuilder();
-            for (int i = 0; i < level; i++) {
-                indent.append("  ");
-            }
-
-            Object userObject = node.getUserObject();
-            if (userObject != null) {
-                writer.write(indent.toString() + userObject.toString() + "\n");
-            }
-
-            int childCount = node.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
-                saveNode(writer, childNode, level + 1);
-            }
-        }
-    }
-
-    */
 
     // Helper method to open a recipe file
     private void openRecipe(File file) {
