@@ -16,7 +16,7 @@ public class MainForm {
     private JPanel panelMain;
     private JList listRecipes;
     private JTabbedPane tabbedPane1;
-    private JTextArea textBody;
+    private JTextArea textSteps;
     private JButton newButton;
     private JButton openButton;
     private JButton saveButton;
@@ -24,17 +24,17 @@ public class MainForm {
     private JTextPane textNotes;
     private JTextField textTitle;
     private JButton buttonAdd;
-    private JButton removeButton;
-    private JTextField textField2;
-    private JButton searchButton;
+    private JButton buttonRemove;
+    private JTextField textPath;
+    private JButton buttonSearch;
     private JButton buttonUpdate;
-    private JButton addFolderButton; // New "Add Folder" button
+    private JButton buttonAddFolder; // New "Add Folder" button
     private JSpinner spinnerServings;
     private JTabbedPane tabbedTables;
     private JTable tableIngredients;
     private JTable tableNutrition;
     private JEditorPane editorPane2;
-    private JTextArea textArea1;
+    private JTextArea textDescription;
     private JTree recipeTree;
     //private JButton imagesButton;
     private JTree treeRecipes;
@@ -51,16 +51,39 @@ public class MainForm {
     private ArrayList<Unit> ingredients = new ArrayList<>();
     private ArrayList<Unit> nutrition = new ArrayList<>();
 
+    private DocumentListener documentListener = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            updateChanges(true);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            updateChanges(true);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            updateChanges(true);
+        }
+    };
+
     public MainForm() {
         updateTree();
         recipes.addNode("Recipes",null,"");
+        buttonUpdate.setEnabled(false);
 
         updateIngredients();
         updateNutrition();
         updateSpinner();
+        updateSelection(null);
 
+        textTitle.getDocument().addDocumentListener(documentListener);
+        textNotes.getDocument().addDocumentListener(documentListener);
+        textDescription.getDocument().addDocumentListener(documentListener);
+        textSteps.getDocument().addDocumentListener(documentListener);
 
-        removeButton.addActionListener(new ActionListener() {
+        buttonRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -102,7 +125,7 @@ public class MainForm {
         buttonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (textField2.getText().isEmpty()) {
+                if (textPath.getText().isEmpty()) {
                     // Adding a recipe
                     // Find unique name
                     int number = 1;
@@ -114,11 +137,11 @@ public class MainForm {
 
                     // Add recipe
                     Recipe newRecipe = new Recipe("Untitled Recipe " + number);
-                    recipes.addNode(newRecipe.getName(), newRecipe, textField2.getText());
+                    recipes.addNode(newRecipe.getName(), newRecipe, textPath.getText());
                 } else {
                     // Adding a folder
-                    String folderName = textField2.getText();
-                    recipes.addNode(folderName, null, textField2.getText());
+                    String folderName = textPath.getText();
+                    recipes.addNode(folderName, null, textPath.getText());
                 }
 
                 updateTree();
@@ -126,12 +149,12 @@ public class MainForm {
             }
         });
 
-        addFolderButton.addActionListener(new ActionListener() { // ActionListener for "Add Folder" button
+        buttonAddFolder.addActionListener(new ActionListener() { // ActionListener for "Add Folder" button
             @Override
             public void actionPerformed(ActionEvent e) {
                 String folderName = JOptionPane.showInputDialog(panelMain, "Enter folder name:");
                 if (folderName != null && !folderName.isEmpty()) {
-                    recipes.addNode(folderName, null, textField2.getText());
+                    recipes.addNode(folderName, null, textPath.getText());
                     updateTree();
                 }
             }
@@ -144,32 +167,23 @@ public class MainForm {
                 if (selectedNode == null)
                     return;
 
-                String path = getPathFromTree(selectedNode);
-
-                textField2.setText(path);
-
-                if(path.equals("")) return ;
-                Recipe recipe = recipes.findNode(path).getData();
-                System.out.println(recipe.getName());
-
-                updateSelection(recipe);
-
                 if (change) {
                     int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         // Save changes
-                        // TODO: Implement save logic
+                        saveToTree();
                     }
                 }
 
-                change = false;
-                buttonUpdate.setEnabled(textArea1.getText().isEmpty());
-                buttonUpdate.setEnabled(textTitle.getText().isEmpty());
-                buttonUpdate.setEnabled(textNotes.getText().isEmpty());
-                buttonUpdate.setEnabled(textBody.getText().isEmpty());
+                String path = getPathFromTree(selectedNode);
+                textPath.setText(path);
 
+                if (path.equals("")) return ;
+                Recipe recipe = recipes.findNode(path).getData();
+                System.out.println(recipe.getName());
 
-                buttonUpdate.setEnabled(true);
+                updateSelection(recipe);
+                updateChanges(false);
             }
         });
 
@@ -199,35 +213,14 @@ public class MainForm {
         buttonUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
-
-                String path = getPathFromTree(selectedNode);
-
-                String newTitle = textTitle.getText();
-                String newBody = textBody.getText();
-                String newNotes = textNotes.getText();
-                String des = textArea1.getText();
-
-                recipes.findNode(path).data.setName(newTitle);
-                recipes.findNode(path).data.setContent(newBody);
-                recipes.findNode(path).data.setNotes(newNotes);
-                recipes.findNode(path).data.setDescription(des);
-                recipes.findNode(path).data.setIngredients(ingredients);
-                recipes.findNode(path).data.setNutrition(nutrition);
-
-                System.out.println(1);
-                System.out.println(recipes.findNode(path).data.getContent());
-
-                recipes.findNode(path).setKey(newTitle);
-
-                updateTree();
+                saveToTree();
             }
         });
 
-        searchButton.addActionListener(new ActionListener() {
+        buttonSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String searchText = textField2.getText();
+                String searchText = textPath.getText();
                 if (!searchText.isEmpty()) {
                     DefaultMutableTreeNode foundNode = findNodeByKey(searchText);
                     if (foundNode != null) {
@@ -303,7 +296,7 @@ public class MainForm {
                         updateNutrition();
                     }
 
-
+                    updateChanges(true);
                 }
             }
         });
@@ -333,6 +326,8 @@ public class MainForm {
                     nutrition.remove(selectedRow);
                     updateNutrition();
                 }
+
+                updateChanges(true);
             }
         });
 
@@ -381,6 +376,8 @@ public class MainForm {
                         nutrition.add(unit);
                         updateIngredients();
                     }
+
+                    updateChanges(true);
                 }
             }
         });
@@ -391,6 +388,7 @@ public class MainForm {
                 int selectedRowIngredients = tableIngredients.getSelectedRow();
                 int selectedRowNutrition = tableNutrition.getSelectedRow();
                 updateIngredients();
+                updateNutrition();
 
                 if (selectedRowIngredients != -1) {
                     tableIngredients.setRowSelectionInterval(selectedRowIngredients, selectedRowIngredients);
@@ -471,6 +469,7 @@ public class MainForm {
                     tableNutrition.setRowSelectionInterval(selectedRow, selectedRow);
                 }
 
+                updateChanges(true);
             }
         });
     }
@@ -699,11 +698,58 @@ public class MainForm {
     }
 
     // Helper method to update the selection fields
+
+    private void saveToTree() {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeRecipes.getLastSelectedPathComponent();
+
+        String path = getPathFromTree(selectedNode);
+
+        String newTitle = textTitle.getText();
+        String newBody = textSteps.getText();
+        String newNotes = textNotes.getText();
+        String des = textDescription.getText();
+
+        recipes.findNode(path).data.setName(newTitle);
+        recipes.findNode(path).data.setContent(newBody);
+        recipes.findNode(path).data.setNotes(newNotes);
+        recipes.findNode(path).data.setDescription(des);
+        recipes.findNode(path).data.setIngredients(ingredients);
+        recipes.findNode(path).data.setNutrition(nutrition);
+
+        System.out.println(1);
+        System.out.println(recipes.findNode(path).data.getContent());
+
+        recipes.findNode(path).setKey(newTitle);
+
+        updateChanges(false);
+        updateTree();
+    }
+
     private void updateSelection(Recipe recipe) {
+        if (recipe == null) {
+            textTitle.setEnabled(false);
+            textSteps.setEnabled(false);
+            textNotes.setEnabled(false);
+            textDescription.setEnabled(false);
+
+            tableIngredients.setEnabled(false);
+            tableNutrition.setEnabled(false);
+            return;
+        }
+
+        textTitle.setEnabled(true);
+        textSteps.setEnabled(true);
+        textNotes.setEnabled(true);
+        textDescription.setEnabled(true);
+
+        tableIngredients.setEnabled(true);
+        tableNutrition.setEnabled(true);
+
+
         textTitle.setText(recipe.getName());
-        textBody.setText(recipe.getContent());
+        textSteps.setText(recipe.getContent());
         textNotes.setText(recipe.getNotes());
-        textArea1.setText(recipe.getDescription());
+        textDescription.setText(recipe.getDescription());
 
         ingredients = recipe.getIngredients();
         nutrition = recipe.getNutrition();
@@ -715,14 +761,20 @@ public class MainForm {
     // Helper method to clear the selection fields
     private void clearFields() {
         textTitle.setText("");
-        textBody.setText("");
+        textSteps.setText("");
         textNotes.setText("");
     }
 
     // Helper method to update the change flag and button
-    private void updateChanges() {
-        change = true;
-        buttonUpdate.setEnabled(true);
+    private void updateChanges(boolean state) {
+        if (state) {
+            change = true;
+        }
+        else {
+            change = false;
+        }
+
+        buttonUpdate.setEnabled(change);
     }
 
     // Helper method to get the path from the selected node
@@ -754,7 +806,7 @@ public class MainForm {
 
         try {
             FileWriter writer = new FileWriter(filePath);
-            writer.write(textBody.getText());
+            writer.write(textSteps.getText());
             writer.close();
             JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
         } catch (IOException e) {
@@ -772,7 +824,7 @@ public class MainForm {
 
         try {
             FileWriter writer = new FileWriter(filePath);
-            writer.write(textBody.getText());
+            writer.write(textSteps.getText());
             writer.close();
             JOptionPane.showMessageDialog(panelMain, "Recipe saved successfully!");
         } catch (IOException e) {
@@ -785,7 +837,7 @@ public class MainForm {
     private void openRecipe(File file) {
         try {
             String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-            textBody.setText(content);
+            textSteps.setText(content);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(panelMain, "Failed to open recipe file.");
