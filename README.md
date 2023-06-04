@@ -17,14 +17,14 @@
 
 **How to use**
 
+Demonstration video: https://youtu.be/fVFS5DrUly0
+
 - Add recipe : click at the Add button, you must select the folder before you add 
 - Remove: select the recipe and click remove 
 - Add folder: you must select the folder, then click and tyoe in your folder name
 - Update: When you modify the content of a recipe, remember to click
 - Save As: allows user to save the recipe to a file with a specific name and location. The file chooser is set to accept only files with the .txt extension.
 - Open:  allows user to open and load a previously saved recipe from a file. After opening the file, the user can modify or work with the recipe as desired. 
-
- 
 
 # COMP1020: Object-oriented Programming and Data Structures Spring 2023
 
