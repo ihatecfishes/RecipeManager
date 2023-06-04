@@ -140,7 +140,7 @@ public class MainForm {
                     recipes.addNode(newRecipe.getName(), newRecipe, textPath.getText());
                 } else {
                     // Adding a folder
-                    String folderName = textField2.getText();
+                    String folderName = textPath.getText();
                     int number = 1;
                     Tree.Node<Recipe> rootNode = recipes.root;
                     if (rootNode != null) {
@@ -150,7 +150,7 @@ public class MainForm {
 
                     // Add recipe
                     Recipe newRecipe = new Recipe("Untitled Recipe " + number);
-                    recipes.addNode(folderName, newRecipe, textField2.getText());
+                    recipes.addNode(folderName, newRecipe, textPath.getText());
                 }
 
                 updateTree();
