@@ -857,6 +857,65 @@ public class MainForm {
         }
     }
 
+        /* SAVE AS
+    // Helper method to save the current recipe as a new file
+    private void saveRecipeAs(File selectedFile, JPanel contentPane) {
+        if (selectedFile == null)
+            return;
+
+        String filePath = selectedFile.getAbsolutePath();
+
+        try {
+            FileWriter writer = new FileWriter(filePath);
+
+            writer.write("Recipes:\n");
+            DefaultTreeModel treeModel = (DefaultTreeModel) treeRecipes.getModel();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeModel.getRoot();
+            saveNode(writer, root, 0);
+
+            writer.write("\n\nPlanner:\n");
+            for (Date date : planner.keySet()) {
+                writer.write(date.toString() + ":\n");
+                ArrayList<String> entries = planner.get(date);
+                if (entries != null) {
+                    for (String entry : entries) {
+                        writer.write(entry + "\n");
+                    }
+                }
+                writer.write("\n");
+            }
+
+            writer.close();
+            JOptionPane.showMessageDialog(contentPane, "Meal planner saved successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(contentPane, "Failed to save meal planner.");
+        }
+    }
+
+    // Helper method to recursively save each node in the recipe tree
+    private void saveNode(FileWriter writer, DefaultMutableTreeNode node, int level) throws IOException {
+        if (node != null) {
+            StringBuilder indent = new StringBuilder();
+            for (int i = 0; i < level; i++) {
+                indent.append("  ");
+            }
+
+            Object userObject = node.getUserObject();
+            if (userObject != null) {
+                writer.write(indent.toString() + userObject.toString() + "\n");
+            }
+
+            int childCount = node.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
+                saveNode(writer, childNode, level + 1);
+            }
+        }
+    }
+
+    */
+
     // Helper method to open a recipe file
     private void openRecipe(File file) {
         try {
