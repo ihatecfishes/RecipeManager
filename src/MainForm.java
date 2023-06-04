@@ -30,7 +30,7 @@ public class MainForm {
     private JButton buttonUpdate;
     private JButton addFolderButton; // New "Add Folder" button
     private JSpinner spinnerServings;
-    private JTabbedPane tabbedPane3;
+    private JTabbedPane tabbedTables;
     private JTable tableIngredients;
     private JTable tableNutrition;
     private JEditorPane editorPane2;
@@ -46,8 +46,10 @@ public class MainForm {
     private Tree<Recipe> recipes = new Tree<>();
     private boolean change = false;
     private boolean enableComboMeasurement = true;
-    // TODO: ingredients temporary
+
+    // For table model only
     private ArrayList<Unit> ingredients = new ArrayList<>();
+    private ArrayList<Unit> nutrition = new ArrayList<>();
 
     public MainForm() {
         updateTree();
@@ -150,10 +152,7 @@ public class MainForm {
                 Recipe recipe = recipes.findNode(path).getData();
                 System.out.println(recipe.getName());
 
-
-
                 updateSelection(recipe);
-
 
                 if (change) {
                     int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
@@ -204,9 +203,6 @@ public class MainForm {
 
                 String path = getPathFromTree(selectedNode);
 
-
-
-
                 String newTitle = textTitle.getText();
                 String newBody = textBody.getText();
                 String newNotes = textNotes.getText();
@@ -216,6 +212,8 @@ public class MainForm {
                 recipes.findNode(path).data.setContent(newBody);
                 recipes.findNode(path).data.setNotes(newNotes);
                 recipes.findNode(path).data.setDescription(des);
+                recipes.findNode(path).data.setIngredients(ingredients);
+                recipes.findNode(path).data.setNutrition(nutrition);
 
                 System.out.println(1);
                 System.out.println(recipes.findNode(path).data.getContent());
@@ -223,7 +221,6 @@ public class MainForm {
                 recipes.findNode(path).setKey(newTitle);
 
                 updateTree();
-
             }
         });
 
@@ -288,17 +285,25 @@ public class MainForm {
         buttonTAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                IngredientDialog ingredientDialog = new IngredientDialog();
-                if (ingredientDialog.displayAdd(panelMain) == 0) {
+                UnitDialog unitDialog = new UnitDialog();
+                if (unitDialog.displayAdd(panelMain) == 0) {
                     Unit unit = new Unit(
-                            ingredientDialog.getIngredientName(),
-                            ingredientDialog.getIngredientUnit(),
-                            ingredientDialog.getIngredientAmount()
+                            unitDialog.getUnitName(),
+                            unitDialog.getUnitMeasurement(),
+                            unitDialog.getUnitAmount()
                     );
 
-                    ingredients.add(unit);
+                    if (tabbedTables.getSelectedIndex() == 0) {
+                        // Ingredients
+                        ingredients.add(unit);
+                        updateIngredients();
+                    }
+                    else if (tabbedTables.getSelectedIndex() == 1) {
+                        nutrition.add(unit);
+                        updateNutrition();
+                    }
 
-                    updateIngredients();
+
                 }
             }
         });
@@ -306,19 +311,42 @@ public class MainForm {
         buttonTRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = tableIngredients.getSelectedRow();
+                int selectedRow = -1;
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    selectedRow = tableIngredients.getSelectedRow();
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    selectedRow = tableNutrition.getSelectedRow();
+                }
+
                 if (selectedRow == -1) {
                     return;
                 }
-                ingredients.remove(selectedRow);
-                updateIngredients();
+
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    ingredients.remove(selectedRow);
+                    updateIngredients();
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    nutrition.remove(selectedRow);
+                    updateNutrition();
+                }
             }
         });
 
         buttonTEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = tableIngredients.getSelectedRow();
+                int selectedRow = -1;
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    selectedRow = tableIngredients.getSelectedRow();
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    selectedRow = tableNutrition.getSelectedRow();
+                }
                 if (selectedRow == -1) {
                     JOptionPane.showMessageDialog(panelMain,
                             "No ingredient is selected.",
@@ -327,16 +355,32 @@ public class MainForm {
                     return;
                 }
 
-                IngredientDialog ingredientDialog = new IngredientDialog();
-                if (ingredientDialog.displayEdit(panelMain, ingredients.get(selectedRow)) == 0) {
+                UnitDialog unitDialog = new UnitDialog();
+                int exitState = -1;
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    exitState = unitDialog.displayEdit(panelMain, ingredients.get(selectedRow));
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    // Nutrition
+                    exitState = unitDialog.displayEdit(panelMain, nutrition.get(selectedRow));
+                }
+                if (exitState == 0) {
                     Unit unit = new Unit(
-                            ingredientDialog.getIngredientName(),
-                            ingredientDialog.getIngredientUnit(),
-                            ingredientDialog.getIngredientAmount()
+                            unitDialog.getUnitName(),
+                            unitDialog.getUnitMeasurement(),
+                            unitDialog.getUnitAmount()
                     );
 
-                    ingredients.set(selectedRow, unit);
-                    updateIngredients();
+                    if (tabbedTables.getSelectedIndex() == 0) {
+                        // Ingredients
+                        ingredients.add(unit);
+                        updateIngredients();
+                    }
+                    else if (tabbedTables.getSelectedIndex() == 1) {
+                        nutrition.add(unit);
+                        updateIngredients();
+                    }
                 }
             }
         });
@@ -344,50 +388,38 @@ public class MainForm {
         spinnerServings.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                int selectedRow = tableIngredients.getSelectedRow();
+                int selectedRowIngredients = tableIngredients.getSelectedRow();
+                int selectedRowNutrition = tableNutrition.getSelectedRow();
                 updateIngredients();
-                tableIngredients.setRowSelectionInterval(selectedRow, selectedRow);
+
+                if (selectedRowIngredients != -1) {
+                    tableIngredients.setRowSelectionInterval(selectedRowIngredients, selectedRowIngredients);
+                }
+                if (selectedRowNutrition != -1) {
+                    tableNutrition.setRowSelectionInterval(selectedRowNutrition, selectedRowNutrition);
+                }
+
             }
         });
 
         tableIngredients.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                enableComboMeasurement = false;
+                updateUnitConversion();
+            }
+        });
 
-                comboMeasurement.removeAllItems();
-                comboMeasurement.setEnabled(false);
+        tableNutrition.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                updateUnitConversion();
+            }
+        });
 
-                int selectedRow = tableIngredients.getSelectedRow();
-                if (selectedRow == -1) {
-                    return;
-                }
-
-                comboMeasurement.setEnabled(true);
-
-                Measurement measurement = ingredients.get(selectedRow).getMeasurement();
-                MeasurementType type = measurement.getType();
-                switch (type) {
-                    case Mass -> {
-                        for (Measurement m : Measurements.mass) {
-                            comboMeasurement.addItem(m);
-                        }
-                    }
-                    case Volume -> {
-                        for (Measurement m : Measurements.volume) {
-                            comboMeasurement.addItem(m);
-                        }
-                    }
-                    case Quantity -> {
-                        for (Measurement m : Measurements.quantity) {
-                            comboMeasurement.addItem(m);
-                        }
-                    }
-                }
-
-                comboMeasurement.setSelectedItem(measurement);
-
-                enableComboMeasurement = true;
+        tabbedTables.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                updateUnitConversion();
             }
         });
 
@@ -402,18 +434,43 @@ public class MainForm {
                 }
 
 
-                int selectedRow = tableIngredients.getSelectedRow();
+                int selectedRow = -1;
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    selectedRow = tableIngredients.getSelectedRow();
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    // Nutrition
+                    selectedRow = tableNutrition.getSelectedRow();
+                }
                 if (selectedRow == -1) {
                     return;
                 }
 
                 Measurement measurement = (Measurement) comboMeasurement.getSelectedItem();
-                Unit unit = ingredients.get(selectedRow);
+                Unit unit = null;
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    unit = ingredients.get(selectedRow);
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    // Nutrition
+                    unit = nutrition.get(selectedRow);
+                }
                 unit.setValue(measurement.convert(unit.getMeasurement().revert(unit.getValue())));
                 unit.setMeasurement(measurement);
 
-                updateIngredients();
-                tableIngredients.setRowSelectionInterval(selectedRow, selectedRow);
+                if (tabbedTables.getSelectedIndex() == 0) {
+                    // Ingredients
+                    updateIngredients();
+                    tableIngredients.setRowSelectionInterval(selectedRow, selectedRow);
+                }
+                else if (tabbedTables.getSelectedIndex() == 1) {
+                    // Nutrition
+                    updateNutrition();
+                    tableNutrition.setRowSelectionInterval(selectedRow, selectedRow);
+                }
+
             }
         });
     }
@@ -465,6 +522,60 @@ public class MainForm {
         dialog.setVisible(true);
     }
 
+    private void updateUnitConversion() {
+        enableComboMeasurement = false;
+
+        comboMeasurement.removeAllItems();
+        comboMeasurement.setEnabled(false);
+
+        int selectedRow = -1;
+        if (tabbedTables.getSelectedIndex() == 0) {
+            // Ingredients
+            selectedRow = tableIngredients.getSelectedRow();
+        }
+        else if (tabbedTables.getSelectedIndex() == 1) {
+            // Nutrition
+            selectedRow = tableNutrition.getSelectedRow();
+        }
+        if (selectedRow == -1) {
+            return;
+        }
+
+        comboMeasurement.setEnabled(true);
+
+        Measurement measurement = null;
+        if (tabbedTables.getSelectedIndex() == 0) {
+            // Ingredients
+            measurement = ingredients.get(selectedRow).getMeasurement();
+        }
+        else if (tabbedTables.getSelectedIndex() == 1) {
+            // Nutrition
+            measurement = nutrition.get(selectedRow).getMeasurement();
+        }
+        MeasurementType type = measurement.getType();
+        switch (type) {
+            case Mass -> {
+                for (Measurement m : Measurements.mass) {
+                    comboMeasurement.addItem(m);
+                }
+            }
+            case Volume -> {
+                for (Measurement m : Measurements.volume) {
+                    comboMeasurement.addItem(m);
+                }
+            }
+            case Quantity -> {
+                for (Measurement m : Measurements.quantity) {
+                    comboMeasurement.addItem(m);
+                }
+            }
+        }
+
+        comboMeasurement.setSelectedItem(measurement);
+
+        enableComboMeasurement = true;
+    }
+
     private void updateSpinner() {
         SpinnerNumberModel model = new SpinnerNumberModel((float) 1, (float) 0, null, (float) 1);
         spinnerServings.setModel(model);
@@ -495,7 +606,6 @@ public class MainForm {
 
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
-                // TODO: implement after update button is fixed
                 switch (columnIndex) {
                     case 0 -> {
                         return ingredients.get(rowIndex).getName();
@@ -531,8 +641,7 @@ public class MainForm {
         TableModel nutritionModel = new AbstractTableModel() {
             @Override
             public int getRowCount() {
-                // TODO: implement after update button is fixed
-                return 3;
+                return nutrition.size();
             }
 
             @Override
@@ -542,8 +651,18 @@ public class MainForm {
 
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
-                // TODO: implement after update button is fixed
-                return null;
+                switch (columnIndex) {
+                    case 0 -> {
+                        return nutrition.get(rowIndex).getName();
+                    }
+                    case 1 -> {
+                        return nutrition.get(rowIndex).getValue() * (Float) spinnerServings.getValue();
+                    }
+                    case 2 -> {
+                        return nutrition.get(rowIndex).getMeasurement();
+                    }
+                }
+                return "";
             }
 
             @Override
@@ -585,6 +704,12 @@ public class MainForm {
         textBody.setText(recipe.getContent());
         textNotes.setText(recipe.getNotes());
         textArea1.setText(recipe.getDescription());
+
+        ingredients = recipe.getIngredients();
+        nutrition = recipe.getNutrition();
+
+        updateIngredients();
+        updateNutrition();
     }
 
     // Helper method to clear the selection fields

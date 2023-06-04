@@ -9,17 +9,18 @@ public class Recipe {
 	private String notes;
 	private float price;
 	private float time;
-	private HashMap<Ingredient, Unit> ingredients;
+	private ArrayList<Unit> ingredients;
+	private ArrayList<Unit> nutrition;
 	private ArrayList<String> images;
 	private ArrayList<String> tags;
-	private EnumMap<Nutrition, Unit> nutrition;
+
 
 	public Recipe(String name) {
 		this.name = name;
-		this.ingredients = new HashMap<>();
+		this.ingredients = new ArrayList<>();
+		this.nutrition = new ArrayList<>();
 		this.images = new ArrayList<>();
 		this.tags = new ArrayList<>();
-		this.nutrition = new EnumMap<>(Nutrition.class);
 	}
 
 
@@ -75,16 +76,12 @@ public class Recipe {
 		this.time = time;
 	}
 
-	public void setIngredient(Ingredient ingredient, Unit unit) {
-		ingredients.put(ingredient, unit);
+	public ArrayList<Unit> getIngredients() {
+		return ingredients;
 	}
 
-	public void setIngredient(Ingredient ingredient, float value) {
-		// Implement your logic here
-	}
-
-	public void removeIngredient(Ingredient ingredient) {
-		ingredients.remove(ingredient);
+	public void setIngredients(ArrayList<Unit> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 	public void addImage(String path) {
@@ -103,16 +100,12 @@ public class Recipe {
 		tags.remove(tag);
 	}
 
-	public void setNutrition(Nutrition nutrition, Unit unit) {
-		this.nutrition.put(nutrition, unit);
+	public ArrayList<Unit> getNutrition() {
+		return nutrition;
 	}
 
-	public void setNutrition(Nutrition nutrition, float value) {
-		// Implement your logic here
-	}
-
-	public void removeNutrition(Nutrition nutrition) {
-		this.nutrition.remove(nutrition);
+	public void setNutrition(ArrayList<Unit> nutrition) {
+		this.nutrition = nutrition;
 	}
 
 	public float calculatePrice() {
