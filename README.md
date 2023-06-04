@@ -1,10 +1,26 @@
 # Instructions:
 
+**How to run**
+
+1. Install IntelliJ IDEA (https://www.jetbrains.com/idea/)
+2. From the welcome screen, press "Get from VCS"
+3. Select "Repository URL", and paste the reposiory URL into the "URL" field (https://github.com/ihatecfishes/RecipeManger_TermProject_COMP1020.git)
+4. Choose a directory to clone the project into in the "Directory" field
+5. Press "Clone"
+7. From the toolbar on top, select "File", "Project Structure"
+8. In the "Project Structure" window, select the "Project" tab under "Project Settings"
+9. In the "SDK" dropdown, select any Java SDK 20 or higher (install using the "Add SDK" option if none exists)
+10. Press "OK" and close the "Project Structure" window
+11. On the directory tree, find Mainform.java (src/Mainform.java) and open the file
+12. On the top of the project window, select "Current File" in the run configuration dropdown
+13. Press Run to run the project
+
+**How to use**
+
 - Add recipe : click at the Add button, you must select the folder before you add 
 - Remove: select the recipe and click remove 
 - Add folder: you must select the folder, then click and tyoe in your folder name
 - Update: When you modify the content of a recipe, remember to click
-
 - Save As: allows user to save the recipe to a file with a specific name and location. The file chooser is set to accept only files with the .txt extension.
 - Open:  allows user to open and load a previously saved recipe from a file. After opening the file, the user can modify or work with the recipe as desired. 
 
