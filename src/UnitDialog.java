@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 
-public class IngredientDialog extends JDialog {
+public class UnitDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -10,13 +10,13 @@ public class IngredientDialog extends JDialog {
     private JComboBox comboType;
     private JComboBox comboMeasurement;
 
-    private String ingredientName;
-    private float ingredientAmount;
-    private MeasurementType ingredientType;
-    private Measurement ingredientUnit;
+    private String unitName;
+    private float unitAmount;
+    private MeasurementType unitType;
+    private Measurement unitMeasurement;
     private int exitState = 1;
 
-    public IngredientDialog() {
+    public UnitDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -75,10 +75,10 @@ public class IngredientDialog extends JDialog {
         }
 
         try {
-            ingredientName = textName.getText();
-            ingredientAmount = Float.parseFloat(textAmount.getText());
-            ingredientType = (MeasurementType) comboType.getSelectedItem();
-            ingredientUnit = (Measurement) comboMeasurement.getSelectedItem();
+            unitName = textName.getText();
+            unitAmount = Float.parseFloat(textAmount.getText());
+            unitType = (MeasurementType) comboType.getSelectedItem();
+            unitMeasurement = (Measurement) comboMeasurement.getSelectedItem();
         }
         catch (Exception e) {
             JOptionPane.showMessageDialog(contentPane,
@@ -121,24 +121,24 @@ public class IngredientDialog extends JDialog {
         }
     }
 
-    public String getIngredientName() {
-        return ingredientName;
+    public String getUnitName() {
+        return unitName;
     }
 
-    public float getIngredientAmount() {
-        return ingredientAmount;
+    public float getUnitAmount() {
+        return unitAmount;
     }
 
-    public MeasurementType getIngredientType() {
-        return ingredientType;
+    public MeasurementType getUnitType() {
+        return unitType;
     }
 
-    public Measurement getIngredientUnit() {
-        return ingredientUnit;
+    public Measurement getUnitMeasurement() {
+        return unitMeasurement;
     }
 
     public static void main(String[] args) {
-        IngredientDialog dialog = new IngredientDialog();
+        UnitDialog dialog = new UnitDialog();
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
@@ -147,7 +147,7 @@ public class IngredientDialog extends JDialog {
     public int displayAdd(JPanel parent) {
         this.pack();
         this.setLocationRelativeTo(parent);
-        this.setTitle("Add Ingredient");
+        this.setTitle("Add Entry");
         this.setVisible(true);
         return exitState;
     }
@@ -160,7 +160,7 @@ public class IngredientDialog extends JDialog {
 
         this.pack();
         this.setLocationRelativeTo(parent);
-        this.setTitle("Edit Ingredient");
+        this.setTitle("Edit Entry");
         this.setVisible(true);
 
         return exitState;

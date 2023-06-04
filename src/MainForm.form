@@ -44,27 +44,6 @@
               </scrollpane>
             </children>
           </grid>
-          <grid id="d9aa1" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="Ingredients"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="b056" class="javax.swing.JList" default-binding="true">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="150" height="-1"/>
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <selectionBackground color="-8867117"/>
-                </properties>
-              </component>
-            </children>
-          </grid>
         </children>
       </tabbedpane>
       <toolbar id="f1fc3">
@@ -139,16 +118,16 @@
               <text value="Add"/>
             </properties>
           </component>
-          <component id="fa548" class="javax.swing.JButton" binding="removeButton" default-binding="true">
+          <component id="dfdb6" class="javax.swing.JButton" binding="buttonAddFolder">
+            <constraints/>
+            <properties>
+              <text value="Add Folder"/>
+            </properties>
+          </component>
+          <component id="fa548" class="javax.swing.JButton" binding="buttonRemove">
             <constraints/>
             <properties>
               <text value="Remove"/>
-            </properties>
-          </component>
-          <component id="dfdb6" class="javax.swing.JButton" binding="addFolderButton">
-            <constraints/>
-            <properties>
-              <text value="addFolder"/>
             </properties>
           </component>
           <component id="80dc6" class="javax.swing.JButton" binding="buttonUpdate">
@@ -171,14 +150,14 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="e727c" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+          <component id="e727c" class="javax.swing.JTextField" binding="textPath">
             <constraints/>
             <properties/>
           </component>
-          <component id="5abe3" class="javax.swing.JButton" binding="searchButton">
+          <component id="5abe3" class="javax.swing.JButton" binding="buttonSearch">
             <constraints/>
             <properties>
-              <text value="Cook"/>
+              <text value="Search"/>
             </properties>
           </component>
         </children>
@@ -280,7 +259,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="627cb" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+                  <component id="627cb" class="javax.swing.JTextArea" binding="textDescription">
                     <constraints/>
                     <properties>
                       <font name="Calibri"/>
@@ -306,7 +285,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="f37a8" class="javax.swing.JTextArea" binding="textBody">
+                  <component id="f37a8" class="javax.swing.JTextArea" binding="textSteps">
                     <constraints/>
                     <properties>
                       <font name="Calibri"/>
@@ -342,7 +321,7 @@
           </grid>
         </children>
       </tabbedpane>
-      <tabbedpane id="15cb4" binding="tabbedPane3" default-binding="true">
+      <tabbedpane id="15cb4" binding="tabbedTables">
         <constraints>
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <minimum-size width="150" height="-1"/>
