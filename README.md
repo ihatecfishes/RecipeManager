@@ -1,23 +1,29 @@
-Instructions:
+# Instructions:
 
-Add recipe : click at the Add button, you must select the folder before you add
-Remove: select the recipe and click remove
-Add folder: you must select the folder, then click and tyoe in your folder name
-Update: When you modify the content of a recipe, remember to click
+- Add recipe : click at the Add button, you must select the folder before you add 
+- Remove: select the recipe and click remove 
+- Add folder: you must select the folder, then click and tyoe in your folder name
+- Update: When you modify the content of a recipe, remember to click
 
-Save As: allows user to save the recipe to a file with a specific name and location. The file chooser is set to accept only files with the .txt extension.
-Open:  allows user to open and load a previously saved recipe from a file. After opening the file, the user can modify or work with the recipe as desired.
+- Save As: allows user to save the recipe to a file with a specific name and location. The file chooser is set to accept only files with the .txt extension.
+- Open:  allows user to open and load a previously saved recipe from a file. After opening the file, the user can modify or work with the recipe as desired. 
 
-COMP1020: Object-oriented Programming and Data Structures
- Spring 2023
+ 
 
-Term Project Proposal
+# COMP1020: Object-oriented Programming and Data Structures Spring 2023
 
-Members Date Member 1: Ngoc Toan April 9, 2023
+## Term Project Proposal
 
-Member 2: Le Phuong Linh Instructor: Prof. Kok-Seng Wong
-Member 3: Nguyen Duy Anh Teaching Assistant 1: Nguyen Minh Tuan
-Member 4: Vuong Chi Hao Teaching Assistant 2: Nguyen Thuy Dung
+**Members:**
+ 
++ Member 1: Ngoc Toan 
++ Member 2: Le Phuong Linh 
++ Member 3: Nguyen Duy Anh 
++ Member 4: Vuong Chi Hao 
+
++ Instructor: Prof. Kok-Seng Wong
++ Teaching Assistant 1: Nguyen Minh Tuan
++ Teaching Assistant 2: Nguyen Thuy Dung
 
 1 Team Introduction
 
