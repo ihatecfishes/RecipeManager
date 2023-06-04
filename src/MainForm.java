@@ -71,7 +71,7 @@ public class MainForm {
     public MainForm() {
         updateTree();
         recipes.addNode("Recipes",null,"");
-        buttonUpdate.setEnabled(false);
+        updateChanges(false);
 
         updateIngredients();
         updateNutrition();
