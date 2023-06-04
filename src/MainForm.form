@@ -118,16 +118,16 @@
               <text value="Add"/>
             </properties>
           </component>
-          <component id="fa548" class="javax.swing.JButton" binding="removeButton" default-binding="true">
+          <component id="dfdb6" class="javax.swing.JButton" binding="buttonAddFolder">
+            <constraints/>
+            <properties>
+              <text value="Add Folder"/>
+            </properties>
+          </component>
+          <component id="fa548" class="javax.swing.JButton" binding="buttonRemove">
             <constraints/>
             <properties>
               <text value="Remove"/>
-            </properties>
-          </component>
-          <component id="dfdb6" class="javax.swing.JButton" binding="addFolderButton">
-            <constraints/>
-            <properties>
-              <text value="addFolder"/>
             </properties>
           </component>
           <component id="80dc6" class="javax.swing.JButton" binding="buttonUpdate">
@@ -150,14 +150,14 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="e727c" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+          <component id="e727c" class="javax.swing.JTextField" binding="textPath">
             <constraints/>
             <properties/>
           </component>
-          <component id="5abe3" class="javax.swing.JButton" binding="searchButton">
+          <component id="5abe3" class="javax.swing.JButton" binding="buttonSearch">
             <constraints/>
             <properties>
-              <text value="Cook"/>
+              <text value="Search"/>
             </properties>
           </component>
         </children>
@@ -259,7 +259,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="627cb" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+                  <component id="627cb" class="javax.swing.JTextArea" binding="textDescription">
                     <constraints/>
                     <properties>
                       <font name="Calibri"/>
@@ -285,7 +285,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="f37a8" class="javax.swing.JTextArea" binding="textBody">
+                  <component id="f37a8" class="javax.swing.JTextArea" binding="textSteps">
                     <constraints/>
                     <properties>
                       <font name="Calibri"/>
