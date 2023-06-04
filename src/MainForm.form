@@ -85,9 +85,11 @@
             <constraints/>
             <properties/>
           </component>
-          <component id="1a11c" class="javax.swing.JToolBar$Separator">
+          <component id="3cad8" class="javax.swing.JButton" binding="buttonPlanner">
             <constraints/>
-            <properties/>
+            <properties>
+              <text value="Meal Planner"/>
+            </properties>
           </component>
         </children>
       </toolbar>

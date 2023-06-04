@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -42,8 +44,10 @@ public class MainForm {
     private JButton buttonTRemove;
     private JButton buttonTEdit;
     private JComboBox comboMeasurement;
+    private JButton buttonPlanner;
 
     private Tree<Recipe> recipes = new Tree<>();
+    private HashMap<Date, ArrayList<String>> planner = new HashMap<>();
     private boolean change = false;
     private boolean enableComboMeasurement = true;
 
@@ -189,7 +193,6 @@ public class MainForm {
 
                 if (path.equals("")) return ;
                 Recipe recipe = recipes.findNode(path).getData();
-                System.out.println(recipe.getName());
 
                 updateSelection(recipe);
                 updateChanges(false);
@@ -481,6 +484,17 @@ public class MainForm {
                 updateChanges(true);
             }
         });
+        buttonPlanner.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MealPlanner mealPlanner = new MealPlanner();
+                mealPlanner.setRecipes(recipes);
+                mealPlanner.setPlanner(planner);
+
+                int exitState = mealPlanner.display(panelMain);
+                planner = mealPlanner.getPlanner();
+            }
+        });
     }
     public static void main(String[] args) {
 
@@ -499,6 +513,7 @@ public class MainForm {
         frame.setContentPane(new MainForm().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
