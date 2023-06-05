@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.*;
 import java.awt.event.*;
@@ -10,7 +11,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class MainForm {
     private JPanel panelMain;
@@ -939,10 +941,9 @@ public class MainForm {
             writer.write("\nSteps: \n");
             writer.write(textSteps.getText());
             writer.write("\n");
-            //writer.write("\nIngredients: \n");
+            writer.write("\nIngredients: \n");
             writer.write(convertJTableToJTextArea(tableIngredients).getText());
-            writer.write("\n");
-            //writer.write("\nNutrition: \n");
+            writer.write("\nNutrition: \n");
             writer.write(convertJTableToJTextArea(tableNutrition).getText());
             writer.write("\n");
             writer.write("Meal Plans: \n");
@@ -955,16 +956,65 @@ public class MainForm {
         }
     }
 
+    private void convertJTextAreaToJTable(JTable table, String tableData) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0); // Clear existing table data
+
+        String[] rows = tableData.split("\n");
+        for (String row : rows) {
+            String[] columns = row.split("\t");
+            model.addRow(columns);
+        }
+    }
+
+    private HashMap<String, String> convertJTextAreaToHashMap(String hashMapData) {
+        HashMap<String, String> hashMap = new HashMap<>();
+
+        String[] entries = hashMapData.split("\n");
+        for (String entry : entries) {
+            String[] keyValue = entry.split(":");
+            if (keyValue.length == 2) {
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+                hashMap.put(key, value);
+            }
+        }
+
+        return hashMap;
+    }
+
     // Helper method to open a recipe file
     private void openRecipe(File file) {
         try {
             String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-            textSteps.setText(content);
+            String[] sections = content.split("\n\n");
+
+            if (sections.length >= 5) {
+                String recipeTitle = sections[0].replace("Recipe: ", "");
+                String description = sections[1].replace("Description:\n", "");
+                String steps = sections[2].replace("Steps:\n", "");
+                String ingredients = sections[3].replace("Ingredients:\n", "");
+                String nutrition = sections[4].replace("Nutrition:\n", "");
+
+                textTitle.setText(recipeTitle);
+                textDescription.setText(description);
+                textSteps.setText(steps);
+                convertJTextAreaToJTable(tableIngredients, ingredients);
+                convertJTextAreaToJTable(tableNutrition, nutrition);
+
+                if (sections.length >= 6) {
+                    String mealPlans = sections[5].replace("Meal Plans:\n", "");
+                    convertJTextAreaToHashMap(mealPlans);
+                }
+            }
+
+            JOptionPane.showMessageDialog(panelMain, "Recipe opened successfully!");
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(panelMain, "Failed to open recipe file.");
         }
     }
+
 
     /*
     // Helper method to display the selected image
