@@ -33,7 +33,7 @@ public class MainForm {
     private JButton buttonAddFolder; // New "Add Folder" button
     private JSpinner spinnerServings;
     private JTabbedPane tabbedTables;
-        private JTable tableIngredients;
+    private JTable tableIngredients;
     private JTable tableNutrition;
     private JEditorPane editorPane2;
     private JTextArea textDescription;
@@ -253,7 +253,7 @@ public class MainForm {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
+                //fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files (*.txt)", "txt"));
 
                 int result = fileChooser.showOpenDialog(panelMain);
                 if (result == JFileChooser.APPROVE_OPTION) {
@@ -996,11 +996,14 @@ public class MainForm {
                 String ingredients = sections[3].replace("Ingredients:\n", "");
                 String nutrition = sections[4].replace("Nutrition:\n", "");
 
+                Recipe newRecipe = new Recipe(recipeTitle);
+                recipes.addNode(newRecipe.getName(), newRecipe, textPath.getText());
+
                 textTitle.setText(recipeTitle);
                 textDescription.setText(description);
                 textSteps.setText(steps);
-                convertJTextAreaToJTable(tableIngredients, ingredients);
-                convertJTextAreaToJTable(tableNutrition, nutrition);
+                //convertJTextAreaToJTable(tableIngredients, ingredients);
+                //convertJTextAreaToJTable(tableNutrition, nutrition);
 
                 if (sections.length >= 6) {
                     String mealPlans = sections[5].replace("Meal Plans:\n", "");
@@ -1014,7 +1017,6 @@ public class MainForm {
             JOptionPane.showMessageDialog(panelMain, "Failed to open recipe file.");
         }
     }
-
 
     /*
     // Helper method to display the selected image
