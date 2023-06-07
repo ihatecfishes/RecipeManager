@@ -180,13 +180,13 @@ public class MainForm {
                 if (selectedNode == null)
                     return;
 
-                if (change) {
-                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
-                    if (dialogResult == JOptionPane.YES_OPTION) {
-                        // Save changes
-                        saveToTree();
-                    }
-                }
+//                if (change) {
+//                    int dialogResult = JOptionPane.showConfirmDialog(panelMain, "Do you want to save the changes?");
+//                    if (dialogResult == JOptionPane.YES_OPTION) {
+//                        // Save changes
+//                        saveToTree();
+//                    }
+//                }
 
                 String path = getPathFromTree(selectedNode);
                 textPath.setText(path);
