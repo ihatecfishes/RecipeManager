@@ -18,6 +18,8 @@ class Measurements {
 	};
 	public static Measurement[] volume = new Measurement[] {
 			new MetersSquared(),
+			new Liters(),
+			new MilliLiters(),
 	};
 	public static Measurement[] quantity = new Measurement[] {
 			new Quantity(),
@@ -161,5 +163,62 @@ class Pieces extends Measurement {
 	@Override
 	public MeasurementType getType() {
 		return MeasurementType.Quantity;
+	}
+}
+
+class Liters extends Measurement {
+
+	@Override
+	public float convert(float value) {
+
+		return value*1000;
+	}
+
+	@Override
+	public float revert(float value) {
+		return value/1000.0f;
+	}
+
+	@Override
+	public String getName() {
+		return "liters";
+	}
+
+	@Override
+	public String getAbbreviation() {
+		return "l";
+	}
+
+	@Override
+	public MeasurementType getType() {
+		return MeasurementType.Volume;
+	}
+}
+class MilliLiters extends Measurement {
+
+	@Override
+	public float convert(float value) {
+
+		return value*10000000;
+	}
+
+	@Override
+	public float revert(float value) {
+		return value/1000000.0f;
+	}
+
+	@Override
+	public String getName() {
+		return "milliliters";
+	}
+
+	@Override
+	public String getAbbreviation() {
+		return "ml";
+	}
+
+	@Override
+	public MeasurementType getType() {
+		return MeasurementType.Volume;
 	}
 }
